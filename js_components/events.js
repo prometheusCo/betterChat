@@ -8,12 +8,6 @@ function setEvents() {
         document.getElementById('moon-icon').classList.toggle('hidden', isLight);
     });
 
-    /**
-     * 4. MODAL LOGIC
-     */
-    const toggleSettings = (show) => document.getElementById('settings-modal').classList.toggle('hidden', !show);
-    const toggleInfo = (show) => document.getElementById('info-modal').classList.toggle('hidden', !show);
-
     // Settings Listeners
     document.getElementById('settings-btn').addEventListener('click', () => toggleSettings(true));
     document.getElementById('cancel-modal').addEventListener('click', () => toggleSettings(false));

@@ -56,3 +56,9 @@ function showFeedback(text) {
     document.body.appendChild(feedback);
     setTimeout(() => feedback.remove(), 2500);
 }
+
+/**
+ * 4. MODAL LOGIC
+ */
+const toggleSettings = (show) => document.getElementById('settings-modal').classList.toggle('hidden', !show);
+const toggleInfo = (show) => document.getElementById('info-modal').classList.toggle('hidden', !show);

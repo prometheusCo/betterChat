@@ -1,5 +1,12 @@
 //
 // set
+
+//
+//
+// Components vars
+//
+//
+
 let config = {
 
     memory: localStorage.getItem('ai_memory') || '',
@@ -11,6 +18,10 @@ let config = {
 let chatHistory = JSON.parse(localStorage.getItem('chat_history')) || [];
 
 
+// 
+//
+// Storage saving functions
+//
 function saveMessage(content, role) {
     chatHistory.push({ content, role });
     localStorage.setItem('chat_history', JSON.stringify(chatHistory));
