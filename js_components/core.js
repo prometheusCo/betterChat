@@ -1,19 +1,21 @@
-function handleSend() {
 
-    const text = input.value.trim();
-    if (!text) return;
+//
+// Core Vars
+//
+//
 
-    appendToUI(text, 'user');
-    saveMessage(text, 'user');
+var gptEndpoint = "https://api.openai.com/v1/responses";
+var ollamaEndpoint = "";
 
-    input.value = '';
-    input.style.height = 'auto';
-    sendBtn.disabled = true;
 
-    setTimeout(() => {
-        const response = `BetterChat processed your request using ${config.model || 'Standard Engine'}.`;
-        appendToUI(response, 'assistant');
-        saveMessage(response, 'assistant');
-    }, 600);
+
+
+//
+// Core functions
+//
+
+
+function name() {
+
 }
 
