@@ -186,3 +186,24 @@
   .dynamic-island:hover {
       transform: scale(1.1);
   }
+
+  #send-button {
+      background-color: var(--btn-green);
+      color: white;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      opacity: 1 !important;
+      /* Force visibility */
+  }
+
+  #send-button:not(:disabled) {
+      background-color: green;
+      transform: scale(1.05);
+  }
+
+  #send-button:disabled {
+      background-color: #374151;
+      /* Dark gray for disabled */
+      color: #9ca3af;
+      cursor: not-allowed;
+  }

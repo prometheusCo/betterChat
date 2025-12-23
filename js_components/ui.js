@@ -21,7 +21,7 @@ const faqData = [
     },
     {
         title: "Can I use different models?",
-        content: "Yes. BetterChat is model-agnostic. You can specify any model supported by your API provider, and the enforced reasoning logic will apply consistently across models."
+        content: "BetterChat currently supports the ChatGPT API and local Ollama model APIs only. Support for additional model APIs will be added in the future."
     }
 ];
 
