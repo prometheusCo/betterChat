@@ -33,6 +33,10 @@ const settingsSchema = [
 ];
 
 
+const chat_resume = [
+    "Prompt something exciting to start"
+];
+
 //
 // 
 // Rendering functions
@@ -83,3 +87,65 @@ function renderFAQ() {
         });
     });
 }
+
+
+function renderHistoryResume() {
+    const list = document.getElementById('resume-list');
+    if (!list) return;
+    list.innerHTML = chat_resume.map(item => `
+                <div class="history-item group block">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 rounded-full bg-purple-500/50 group-hover:bg-purple-500 transition-colors"></div>
+                        <div class="text-sm font-medium text-[var(--text-main)] line-clamp-1">${item}</div>
+                    </div>
+                </div>
+            `).join('');
+}
+
+function appendToUI(content, role, animate = true) {
+
+    if (!hero.classList.contains('hidden')) {
+        hero.classList.add('hidden');
+        messageList.classList.remove('hidden');
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = `flex w-full ${animate ? 'fade-in-up' : ''} ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+    const message = document.createElement('div');
+    if (role === 'user') {
+        message.className = 'user-msg px-5 py-3 rounded-3xl text-[15px] max-w-[80%]';
+        message.textContent = content;
+    } else {
+        message.className = 'flex space-x-4 w-full';
+        message.innerHTML = `
+                    <div class="shrink-0 mt-1">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center">
+                            <svg class="text-white" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
+                        </div>
+                    </div>
+                    <div class="message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
+                `;
+    }
+
+    wrapper.appendChild(message);
+    messageList.appendChild(wrapper);
+    chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: animate ? 'smooth' : 'auto' });
+}
+
+
+function showFeedback(text) {
+    const feedback = document.createElement('div');
+    feedback.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-2 rounded-full text-sm shadow-lg fade-in-up z-50";
+    feedback.textContent = text;
+    document.body.appendChild(feedback);
+    setTimeout(() => feedback.remove(), 2500);
+}
+
+/**
+ * 4. MODAL LOGIC
+ */
+
+const toggleSettings = (show) => document.getElementById('settings-modal').classList.toggle('hidden', !show);
+const toggleInfo = (show) => document.getElementById('info-modal').classList.toggle('hidden', !show);
+const toggleHistory = (show) => document.getElementById('history-modal').classList.toggle('hidden', !show);

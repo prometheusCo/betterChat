@@ -11,6 +11,8 @@ function setEvents() {
     // Settings Listeners
     document.getElementById('settings-btn').addEventListener('click', () => toggleSettings(true));
     document.getElementById('cancel-modal').addEventListener('click', () => toggleSettings(false));
+    document.getElementById('history-modal').addEventListener('click', () => toggleHistory(false));
+
     document.getElementById('save-settings').addEventListener('click', () => {
         saveStorage();
     });
@@ -18,6 +20,7 @@ function setEvents() {
     // Info/FAQ Listeners
     document.getElementById('info-btn').addEventListener('click', () => toggleInfo(true));
     document.getElementById('close-info').addEventListener('click', () => toggleInfo(false));
+    document.getElementById('close-history').addEventListener('click', () => toggleHistory(false));
 
     // Click outside to close modals
     window.addEventListener('click', (e) => {
@@ -42,4 +45,8 @@ function setEvents() {
     });
 
 }
+
+document.getElementById('history-button').onclick = () => {
+    toggleHistory(true);
+};
 
