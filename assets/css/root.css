@@ -166,3 +166,23 @@
       background-color: var(--input-bg);
       border-color: var(--border-color);
   }
+
+
+  /* Dynamic Island Style */
+  .dynamic-island {
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15);
+
+  }
+
+  .dynamic-island:hover {
+      transform: scale(1.1);
+  }

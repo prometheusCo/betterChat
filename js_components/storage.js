@@ -44,3 +44,10 @@ function saveStorage() {
     toggleSettings(false);
     showFeedback("Configuration updated");
 }
+
+
+function clearHistory() {
+
+    localStorage.removeItem('chat_history');
+    localStorage.removeItem('goal_history');
+}

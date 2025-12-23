@@ -149,3 +149,4 @@ function showFeedback(text) {
 const toggleSettings = (show) => document.getElementById('settings-modal').classList.toggle('hidden', !show);
 const toggleInfo = (show) => document.getElementById('info-modal').classList.toggle('hidden', !show);
 const toggleHistory = (show) => document.getElementById('history-modal').classList.toggle('hidden', !show);
+const toggleDelete = (show) => document.getElementById('delete-modal').classList.toggle('hidden', !show);

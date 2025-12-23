@@ -21,6 +21,17 @@ function setEvents() {
     document.getElementById('info-btn').addEventListener('click', () => toggleInfo(true));
     document.getElementById('close-info').addEventListener('click', () => toggleInfo(false));
     document.getElementById('close-history').addEventListener('click', () => toggleHistory(false));
+    document.getElementById('close-history').addEventListener('click', () => toggleHistory(false));
+    document.getElementById('delete-modal').onclick = () => toggleDelete(false);
+
+    document.getElementById('delete-storage-btn').onclick = () => toggleDelete(true);
+    document.getElementById('cancel-delete').onclick = () => toggleDelete(false);
+
+    document.getElementById('confirm-delete').onclick = () => {
+        clearHistory();
+        window.location.reload();
+    };
+
 
     // Click outside to close modals
     window.addEventListener('click', (e) => {
