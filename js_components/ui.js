@@ -34,7 +34,7 @@ const settingsSchema = [
 
 
 const chat_resume = [
-    "Prompt something exciting to start"
+    "No goal defined yet - Prompt something to start"
 ];
 
 //
