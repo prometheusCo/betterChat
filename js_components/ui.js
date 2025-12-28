@@ -143,7 +143,26 @@ function showFeedback(text) {
 }
 
 
-function handleSend() {
+function showSpinner(show = true) {
+
+    if (!show) {
+        const loader = document.getElementsByClassName("loader")[0];
+        chatArea.style.filter = "blur(0px)";
+        loader.remove();
+        return;
+    }
+
+    const loader = document.createElement("div");
+    loader.className = "loader";
+
+    body.appendChild(loader);
+    chatArea.style.filter = "blur(12px)";
+
+}
+
+async function handleSend() {
+
+    showSpinner();
 
     const text = input.value.trim();
     if (!text) return;
@@ -155,8 +174,9 @@ function handleSend() {
     input.style.height = 'auto';
     sendBtn.disabled = true;
 
-    setTimeout(() => {
-        const response = `BetterChat processed your request using ${config.model || 'Standard Engine'}.`;
+    setTimeout(async () => {
+        const response = await processMessageSimple(text);
+        showSpinner(false);
         appendToUI(response, 'assistant');
         saveMessage(response, 'assistant');
     }, 600);
@@ -170,3 +190,10 @@ const toggleSettings = (show) => document.getElementById('settings-modal').class
 const toggleInfo = (show) => document.getElementById('info-modal').classList.toggle('hidden', !show);
 const toggleHistory = (show) => document.getElementById('history-modal').classList.toggle('hidden', !show);
 const toggleDelete = (show) => document.getElementById('delete-modal').classList.toggle('hidden', !show);
+
+
+
+function developTestMsg() {
+    developing ? input.value = `Hola, como estas?` : null;
+    sendBtn.disabled = false;
+}

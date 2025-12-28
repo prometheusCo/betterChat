@@ -51,3 +51,7 @@ function clearHistory() {
     localStorage.removeItem('chat_history');
     localStorage.removeItem('goal_history');
 }
+
+function getFromStorage(keyToLoad) {
+    log("function no yet implemented!");
+}

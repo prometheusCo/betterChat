@@ -16,6 +16,7 @@
 
 
     <!-- JS COMPONENTS -->
+    <script src="ENV.js"></script>
     <script src="js_components/storage.js"></script>
     <script src="js_components/ui.js"></script>
     <script src="js_components/core.js"></script>
@@ -25,7 +26,7 @@
 
 </head>
 
-<body class="flex flex-col h-screen overflow-hidden">
+<body class="flex flex-col h-screen overflow-hidden body">
 
     <!-- Header -->
     <header class="flex justify-between p-5 shrink-0 bg-[var(--bg-outer)] transition-colors duration-300">
@@ -212,7 +213,8 @@
     <!-- Main Workspace -->
     <div
         class="flex-1 flex items-center justify-center px-4 sm:px-6 bg-[var(--bg-outer)] overflow-hidden pb-4 transition-colors duration-300">
-        <main id="workspace-container" class="workspace w-full max-w-4xl flex flex-col relative overflow-hidden h-full">
+        <main id="workspace-container" class="workspace w-full max-w-4xl flex flex-col relative overflow-hidden h-full"
+        style>
 
             <!-- Iphone island styled quick actions -->
 
@@ -243,19 +245,19 @@
                 </div>
             </div>
 
-            <div id="chat-area" class="flex-1 overflow-y-auto no-scrollbar flex flex-col items-center">
+            <div id="chat-area" class="flex-1 overflow-y-auto no-scrollbar flex flex-col items-centert" style="">
 
-                <div id="hero" class="my-auto flex flex-col items-center text-center px-6">
+                <div id="hero" class="my-auto flex flex-col items-center text-center px-6 ">
                     <h1
                         class="text-4xl md:text-5xl font-medium bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
                         BetterChat
                     </h1>
                     <p class="text-[var(--text-sub)] text-lg max-w-md">Your usual AI, but significantly smarter.</p>
                 </div>
-                <div id="message-list" class="w-full max-w-3xl px-6 space-y-10 py-12 hidden"></div>
+                <div id="message-list" class="w-full max-w-3xl px-6 space-y-10 py-12 hidden" style=""></div>
             </div>
 
-            <div class="w-full flex justify-center pb-8 pt-4 px-6 shrink-0">
+            <div class="w-full flex justify-center pb-8 pt-4 px-6 shrink-0 " id="textarea">
                 <div class="w-full max-w-3xl relative">
                     <div class="input-pill flex items-end p-2 pl-6 pr-3 transition-all">
                         <textarea id="user-input" rows="1" placeholder="Enter a prompt here"
@@ -278,6 +280,7 @@
         </main>
     </div>
 
+    
     <footer
         class="w-full flex flex-col items-center pb-3 pt-2 px-4 shrink-0 bg-[var(--bg-outer)] transition-colors duration-300">
         <div class="flex items-center space-x-2 text-[11px] text-gray-500">
@@ -289,7 +292,6 @@
     </footer>
 
     <script>
-
 
 
         /**
@@ -322,6 +324,7 @@
             // Settings  dom events
             setEvents();
 
+            developTestMsg();
         };
 
     </script>
