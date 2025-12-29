@@ -26,7 +26,9 @@ async function gatherCriticalRequirements(task_planning, context) {
       <monologue>used for your internal moologue</monologue>
       <result>final result</result>
 
-    ** Critical information cases/examples **
+    ** Important: Dont include steps in <result> **
+
+    ** Critical information cases/examples to follow **
 
          >  "objective" : "write a poem ,  "critical" : ["topic"].   
          >  "objective" : "write an story/tale/book" , "critical" : ["topic, genre"].
