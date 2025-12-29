@@ -22,7 +22,6 @@ This guarantees structure before execution.
 - Deterministic task resume → plan → validation flow  
 - Model-agnostic (OpenAI, Ollama, etc.)  
 - Prevents silent assumptions and hallucinated inputs  
-- Fully local execution  
 - Encrypted local storage (API keys, preferences, memory)  
 - Web, Electron, and Nativefier compatible  
 
