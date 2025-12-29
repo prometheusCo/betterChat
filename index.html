@@ -16,13 +16,13 @@
 
 
     <!-- JS COMPONENTS -->
-    <script src="ENV.js"></script>
-    <script src="js_components/storage.js"></script>
-    <script src="js_components/ui.js"></script>
-    <script src="js_components/core.js"></script>
-    <script defer src="js_components/dom.js"></script>
-    <script defer src="js_components/events.js"></script>
-
+     <script src="ENV.js"></script>
+     <script src="js_components/storage.js"></script>
+     <script src="js_components/ui.js"></script>
+     <script src="js_components/core.js"></script>
+     <script defer src="js_components/dom.js"></script>
+     <script defer src="js_components/events.js"></script>
+     <script defer src="js_components/flow-control.js"></script>
 
 </head>
 
@@ -32,7 +32,7 @@
     <header class="flex justify-between p-5 shrink-0 bg-[var(--bg-outer)] transition-colors duration-300">
 
         <!-- Info Button (Left) -->
-        <button id="info-btn"
+        <button id="info-btn" aria-label="short faq"
             class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/5 transition-colors text-gray-400 hover:text-[var(--text-main)]"
             title="Information & FAQ">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
@@ -46,7 +46,7 @@
 
         <!-- Right Side Icons -->
         <div class="flex space-x-2">
-            <button id="theme-toggle"
+            <button id="theme-toggle" aria-label="dark mode toggle"
                 class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/5 transition-colors text-gray-400 hover:text-[var(--text-main)]"
                 title="Toggle Theme">
                 <svg id="sun-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
@@ -68,7 +68,7 @@
                 </svg>
             </button>
 
-            <button id="settings-btn"
+            <button id="settings-btn" aria-label="Open settings modal"
                 class="p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/5 transition-colors text-gray-400 hover:text-[var(--text-main)]"
                 title="Configuration & Memory">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
@@ -91,9 +91,9 @@
                 class="flex justify-between items-center p-6 border-b border-[var(--border-color)] bg-[var(--modal-bg)] shrink-0">
                 <h2 class="text-xl font-medium">Settings</h2>
                 <div class="flex items-center space-x-2">
-                    <button id="cancel-modal"
+                    <button aria-label="Close settings modal" id="cancel-modal"
                         class="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-sub)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors">Cancel</button>
-                    <button id="save-settings"
+                    <button id="save-settings" aria-label="Save settings to disk"
                         class="px-5 py-2 rounded-full text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-lg">Save</button>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                 class="flex justify-between items-center p-6 border-b border-[var(--border-color)] bg-[var(--modal-bg)] shrink-0">
                 <h2 class="text-xl font-medium text-purple-400">BetterChat Info</h2>
 
-                <button id="close-info"
+                <button id="close-info" aria-label="Close quick faq modal"
                     class="text-gray-500 hover:text-[var(--text-main)] p-2 rounded-full transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -155,7 +155,7 @@
             <div
                 class="flex justify-between items-center p-6 border-b border-[var(--border-color)] bg-[var(--modal-bg)] shrink-0">
                 <h2 class="text-xl font-medium text-purple-400">Chat goal history</h2>
-                <button id="close-history"
+                <button id="close-history" aria-label="Close chat goals history"
                     class="text-gray-500 hover:text-[var(--text-main)] p-2 rounded-full transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -200,10 +200,10 @@
                     permanently.</p>
             </div>
             <div class="flex items-center border-t border-[var(--border-color)]">
-                <button id="cancel-delete"
+                <button id="cancel-delete" aria-label="Cancel delete history modal"
                     class="flex-1 px-6 py-4 text-sm font-medium text-[var(--text-sub)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors">Cancel</button>
                 <div class="w-[1px] h-12 bg-[var(--border-color)]"></div>
-                <button id="confirm-delete"
+                <button id="confirm-delete" aria-label="Confirm history deletion"
                     class="flex-1 px-6 py-4 text-sm font-medium text-red-500 hover:bg-red-500/5 transition-colors">Delete
                     All</button>
             </div>
@@ -221,7 +221,7 @@
             <div class="absolute top-6 left-1/2 -translate-x-1/2 z-10">
                 <div class="dynamic-island">
 
-                    <button id="history-button"
+                    <button id="history-button" aria-label="Show goals history"
                         class="p-2.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-gray-400 hover:text-purple-400"
                         title="Chat History Resume">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -232,7 +232,7 @@
                         </svg>
                     </button>
                     <div class="w-[1px] h-4 bg-[var(--border-color)] mx-1"></div>
-                    <button id="delete-storage-btn"
+                    <button id="delete-storage-btn" aria-label="Delete storage modal"
                         class="p-2.5 rounded-full hover:bg-red-500/10 transition-colors text-gray-400 hover:text-red-400"
                         title="Clear All Storage">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -263,7 +263,7 @@
                         <textarea id="user-input" rows="1" placeholder="Enter a prompt here"
                             class="w-full bg-transparent border-none focus:ring-0 outline-none py-3 text-[16px] text-[var(--text-main)] placeholder-gray-500 max-h-[200px] overflow-y-auto no-scrollbar"></textarea>
                         <div class="flex items-center space-x-1 mb-1">
-                            <button id="send-button"
+                            <button id="send-button" aria-label="Send prompt"
                                 class="p-3 text-gray-400 hover:text-[var(--text-main)] transition-all disabled:opacity-0"
                                 disabled>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

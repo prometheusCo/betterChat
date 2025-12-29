@@ -175,7 +175,7 @@ async function handleSend() {
     sendBtn.disabled = true;
 
     setTimeout(async () => {
-        const response = await processMessageSimple(text);
+        const response = await processMessage(text);
         showSpinner(false);
         appendToUI(response, 'assistant');
         saveMessage(response, 'assistant');
@@ -194,6 +194,8 @@ const toggleDelete = (show) => document.getElementById('delete-modal').classList
 
 
 function developTestMsg() {
-    developing ? input.value = `Hola, como estas?` : null;
+    developing ? input.value = `Hazme una historia de terror` : null;
     sendBtn.disabled = false;
 }
+
+
