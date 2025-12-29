@@ -50,8 +50,8 @@ const modelNameUsed = developing ? testModelName : getFromStorage(`modelName`);
 // Core functions
 //
 
-log = (msg) => developing ? console.log(msg) : null;
-time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
+const log = (msg) => developing ? console.log(msg) : null;
+const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
 
 function errorHandling(error) {
     log(error); throw new Error(error);

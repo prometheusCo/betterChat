@@ -41,7 +41,8 @@ async function gatherCriticalRequirements(task_planning, context) {
        ${context}
     
     Finally: 
-     > If:  All critical information is provided, execute task following ** task_planning** if not.
+     > If:  All critical information is provided, execute task following ** task_planning** and return <result> if not ask for that missing
+     information ni an human like level.
     `,
         message = ` `;
 
