@@ -103,74 +103,9 @@ async function apiCall(prompt, instructions = "Be a helpful asistant",) {
     return getRespFromJSON(data);
 }
 
-//
-// Stream version of function above
-async function apiCallStream(prompt, instructions = "Be a helpful assistant", onChunk) {
-
-    const response = await fetch(gptEndpoint, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${keyUsed.trim()}`
-        },
-        body: JSON.stringify({
-            ...makeJSON(prompt, instructions),
-            stream: true
-        })
-    });
-
-    if (!response.body) {
-        throw new Error("Streaming not supported by this browser");
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-
-    let fullText = "";
-
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        fullText += parseStreamChunk(chunk, onChunk);
-    }
-
-    return fullText;
-}
-
-
 function processMessageSimple(msg) {
     promptCheck(msg);
     return apiCall(msg);
-}
-
-function parseStreamChunk(chunk, onChunk) {
-    let accumulated = "";
-
-    const lines = chunk.split("\n");
-
-    for (const line of lines) {
-        if (!line.startsWith("data: ")) continue;
-
-        const data = line.replace("data: ", "").trim();
-
-        if (data === "[DONE]") return accumulated;
-
-        try {
-            const json = JSON.parse(data);
-            const token = json.choices?.[0]?.delta?.content;
-
-            if (token) {
-                accumulated += token;
-                onChunk?.(token);
-            }
-        } catch {
-            // Ignore malformed partial chunks
-        }
-    }
-
-    return accumulated;
 }
 
 // Reduces hallucination when resuming tasks
