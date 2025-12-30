@@ -7,21 +7,6 @@
 // EndPoints list
 var gptEndpoint = "https://api.openai.com/v1/responses";
 
-var jsonTouse = {
-
-    model: null,
-    input: [
-        {
-            role: "instructions",
-            content: null
-        },
-        {
-            role: "user",
-            content: null
-        }
-    ]
-};
-
 
 //
 // 
@@ -46,19 +31,23 @@ const keyUsed = developing ? gptTestKey : getFromStorage(`key`);
 // Getting  model name
 const modelNameUsed = developing ? testModelName : getFromStorage(`modelName`);
 
+
 //
 // Core functions
 //
 
+
 const log = (msg) => developing ? console.log(msg) : null;
 const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
 
+//
 function errorHandling(error) {
     log(error); throw new Error(error);
 }
 
 const isValid = v => v !== undefined && v !== null && v !== "";
 
+//
 function promptCheck(prompt) {
 
     if (isValid(prompt)) return true;
@@ -66,27 +55,43 @@ function promptCheck(prompt) {
     errorHandling(`Prompt empty please provide one!`);
 }
 
-function makeJSON(prompt, instructions) {
-    const input = [];
+//
+function makeJSON(prompt, instructions, _responseFormat = false) {
+
+    let body = {}, input = [];
 
     isValid(instructions) ? input.push({ role: "system", content: instructions }) : null;
     input.push({ role: "user", content: prompt });
 
-    return {
-        model: modelNameUsed,
-        input
-    };
+    body.input = input;
+    body.model = modelNameUsed;
+
+    if (!_responseFormat) return body;
+
+    body.text = {};
+    body.text.format = textFormats[_responseFormat];
+    return body;
 }
 
-function getRespFromJSON(data = data.response) {
+//
+function getRespFromJSON(data = data.response, out = false) {
 
-    let output = data.output[0].content[0].text || data.response?.output_text || false;
+    let output = null;
+
+    try {
+
+        (!out) ?
+            output = data.output[0].content[0].text || data.response?.output_text || false :
+            output = data[out];
+
+    } catch (e) { output = data.response; }
 
     if (!output) errorHandling(`bad response from API Server. \n Server full respose was: ${JSON.stringify(data)}`);
     return output;
 }
 
-async function apiCall(prompt, instructions = "Be a helpful asistant",) {
+//
+async function apiCall(prompt, instructions = "Be a helpful asistant", _responseFormat) {
 
     const input = [];
 
@@ -96,7 +101,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant",) {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${keyUsed.trim()}`
         },
-        body: JSON.stringify(makeJSON(prompt, instructions))
+        body: JSON.stringify(makeJSON(prompt, instructions, _responseFormat))
     });
 
     const data = await response.json(); time();
@@ -108,7 +113,7 @@ function processMessageSimple(msg) {
     return apiCall(msg);
 }
 
+
 // Reduces hallucination when resuming tasks
-// I know it has magik numbers...
-// TO_DO_LIST: Remove magik numbers
-const getWordsForResume = (msg) => msg.length > 15 ? 10 : 5;
+const getWordsForResume = (msg) => msg.length > CONFIG.sentence_threshold_jump ?
+    CONFIG.max_resume_words_a : max_resume_words_b;
