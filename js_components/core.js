@@ -1,23 +1,4 @@
 
-//
-// Core Vars
-//
-//
-
-// EndPoints list
-var gptEndpoint = "https://api.openai.com/v1/responses";
-
-
-//
-// 
-// CONF ZONE
-//
-//
-
-
-
-// Set to false when developing is done (it hides all debuging messages)
-const developing = true;
 // For measurimg global exec time
 const t0 = developing ? performance.now() : false;
 
@@ -42,7 +23,8 @@ const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
 
 //
 function errorHandling(error) {
-    log(error); throw new Error(error);
+    log(error);
+    throw new Error(error);
 }
 
 const isValid = v => v !== undefined && v !== null && v !== "";
@@ -95,7 +77,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
 
     const input = [];
 
-    const response = await fetch(gptEndpoint, {
+    const response = await fetch(CONFIG.endPointUrl, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

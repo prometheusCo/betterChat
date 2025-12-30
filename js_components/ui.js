@@ -9,26 +9,25 @@ const faqData = [
 
     {
         title: "What is BetterChat?",
-        content: "BetterChat is a specialized frontend for Large Language Models that enforces structured reasoning. It hardcodes Chain of Thought execution at  code level, ensuring the model follows instructions strictly and produces higher-quality reasoning than standard chat interfaces."
+        content: "BetterChat is a specialized frontend for GPT Large Language Models,  that enforces structured reasoning. It hardcodes Chain of Thought execution at  code level, ensuring the model follows instructions strictly and produces higher-quality reasoning than standard chat interfaces."
     },
     {
         title: "How does enforced Chain of Thought work?",
-        content: "BetterChat injects and controls reasoning steps directly in the prompt and execution flow. This prevents the model from skipping instructions, resulting in more consistent, logical, and reliable outputs compared to vanilla LLM usage."
+        content: "BetterChat injects and controls reasoning steps directly in the prompt and execution flow. This prevents the model from skipping instructions and reduces hallucination risks. Resulting in more consistent, logical, and reliable outputs compared to vanilla LLM usage."
     },
     {
         title: "Is my data secure?",
-        content: "Yes. All data stored on your device—including API keys, endpoints, preferences, and memory—is encrypted locally. This information never leaves your device except when sent directly to your selected AI provider during a request. No intermediary servers are involved."
+        content: "Yes. All sensitive data stored on your device—including API keys, endpoints, preferences, and memory—is encrypted locally. This information never leaves your device except when sent directly to your selected AI provider during a request. No intermediary servers are involved."
     },
     {
         title: "Can I use different models?",
-        content: "BetterChat currently supports the ChatGPT API and local Ollama model APIs only. Support for additional model APIs will be added in the future."
+        content: "BetterChat currently supports the  Open AI API. Support for additional APIs will be added in the future. Therefore all Open AI models are available."
     }
 ];
 
 
 const settingsSchema = [
     { id: 'model', label: 'Model Name', placeholder: 'e.g. gpt-4o, gemini-pro', type: 'text', storageKey: 'ai_model_name' },
-    { id: 'endpoint', label: 'Endpoint URL', placeholder: 'https://api.openai.com/v1/chat/completions', type: 'text', storageKey: 'ai_endpoint' },
     { id: 'apiKey', label: 'API Key', placeholder: 'sk-...', type: 'password', storageKey: 'ai_api_key' }
 ];
 
