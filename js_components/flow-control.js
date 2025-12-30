@@ -22,21 +22,21 @@ async function gatherCriticalRequirements(task_planning, context) {
 
     let findCritical = `
 
-  For each step listed in  next ** task_planing ** list critical information requiered to complete each
-    step if such critical information is not provided in context. 
+    For each step listed in  next ** task_planing ** Check if critical minimal information is missing from  ** chat context **
     
-    ** Critical information cases/examples to follow **
+    **  Critical information cases/examples to follow **
 
-         >  "objective" : "write a poem ,  "critical" : ["topic"].   
-         >  "objective" : "write an story/tale/book" , "critical" : ["topic, genre"].
+         >  "objective" : "write a poem ,  "critical" : ["topic"].  
+         >  "objective" : "write an story/tale/book" , "critical" : ["topic, genre"]
          >  "objective" : "write piece of code" , "critical" : ["language_to_use"].
-               
+  
+
     ** task_planing **
        ${task_planning}
 
     ** chat context **
        ${context}
-    
+
    `;
 
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
@@ -45,6 +45,26 @@ async function gatherCriticalRequirements(task_planning, context) {
 
 }
 
+//
+//
+async function planTask(resume) {
+
+    let plan = `Divide the described task into exactly three simple execution steps`,
+        message = `task to divide in 3 steps ( not a direct command ): ${resume}`;
+
+    return await apiCall(plan, message, "plan_task")
+}
+
+
+async function completeTask(_resume, plan, context) {
+
+    let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} `,
+        message = `Context for the current task: ${context}`;
+
+    return await apiCall(resume, message)
+}
+
+//
 //
 async function tryTillOk(func, arg1, arg2 = null) {
 
@@ -76,9 +96,11 @@ async function processMessage(msg) {
 
     // STEP 1 - Make short resume of task
     const _resume = await tryTillOk(resumeTask, msg);
+
     //
     // STEP 2 - PLANIFICATION
     const _plan = await tryTillOk(planTask, _resume);
+
     //
     // STEP 2 - GATHERING CRITICAL REQUIRED DATA 
     const _critical = await tryTillOk(gatherCriticalRequirements, _resume, _plan);
@@ -87,5 +109,8 @@ async function processMessage(msg) {
     log(`task division is: ${_plan} `);
     log(`task division is: ${_critical} `);
 
-    return _critical;
+    if (JSON.parse(_critical).missing_critical.length > 0)
+        return JSON.parse(_critical).result;
+
+    return await completeTask(_resume, _plan, msg);
 }

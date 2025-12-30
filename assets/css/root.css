@@ -284,3 +284,8 @@
  top: calc(50% - 1.25em);
  left: calc(50% - 1.25em);
 }
+
+.monologue {
+    text-align: justify!important;
+  white-space: pre-line!important;
+}

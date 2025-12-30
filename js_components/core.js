@@ -5,7 +5,7 @@ const t0 = developing ? performance.now() : false;
 
 // For use only in developing (gpt test key will be retired from open ai API dashboard after developement is done)
 const testModelName = `gpt-4.1-mini`;
-const gptTestKey = `${ENV.gptTestKey}`;
+const gptTestKey = `${ENV.gptTestKey}`;// ENV obj is in a GIT ommited file so relax...
 
 // Getting auth data from storage logic if in production.
 const keyUsed = developing ? gptTestKey : getFromStorage(`key`);
@@ -47,6 +47,7 @@ function makeJSON(prompt, instructions, _responseFormat = false) {
 
     body.input = input;
     body.model = modelNameUsed;
+    body.stream = CONFIG.stream;
 
     if (!_responseFormat) return body;
 
@@ -86,8 +87,66 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
         body: JSON.stringify(makeJSON(prompt, instructions, _responseFormat))
     });
 
-    const data = await response.json(); time();
-    return getRespFromJSON(data);
+    if (!CONFIG.stream)
+        return getRespFromJSON(await response.json());
+
+    try { showSpinner(false); } catch (error) { }
+    //
+    //Handling streamed data
+
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+
+    let buffer = "";
+    let fullText = "";
+
+    while (true) {
+
+        keep = true;
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        const lines = buffer.split("\n");
+        buffer = lines.pop(); // línea incompleta
+
+        for (const line of lines) {
+
+            if (!line.startsWith("data: ")) continue;
+
+            const payload = line.replace("data: ", "").trim();
+
+            if (payload === "[DONE]") {
+                time();
+                return fullText;
+            }
+
+            const json = JSON.parse(payload);
+
+            // estándar Responses API
+            let delta =
+                json.output_text ||
+                json.delta ||
+                json?.output?.[0]?.content?.[0]?.text;
+
+            if (delta) {
+
+                let _delta = delta.replace(/[{}]/g, "");
+
+                fullText += delta;
+                thinking.textContent += _delta;
+
+                log(delta);
+            }
+        }
+    }
+
+    time();
+    thinking.textContent += "\n \n";
+    return fullText;
+
 }
 
 function processMessageSimple(msg) {

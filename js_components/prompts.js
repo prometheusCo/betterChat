@@ -36,12 +36,8 @@ const textFormats = {
             type: "object",
             properties: {
                 resume: { type: "string" },
-                word_count: {
-                    type: "integer",
-                    minimum: 0
-                }
             },
-            required: ["resume", "word_count"],
+            required: ["resume"],
             additionalProperties: false
         }
     },
@@ -62,6 +58,15 @@ const textFormats = {
             required: ["steps"],
             additionalProperties: false
         }
+    },
+
+    out_fields: {
+
+        resume_task: "steps",
+        critical_info: "missing_critical",
+
     }
+
+
 
 };

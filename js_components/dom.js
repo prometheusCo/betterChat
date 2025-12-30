@@ -6,3 +6,4 @@ const chatArea = document.getElementById('chat-area');
 const workspace = document.getElementById('workspace-container');
 const body = document.getElementsByClassName('body')[0];
 
+let thinking = null;

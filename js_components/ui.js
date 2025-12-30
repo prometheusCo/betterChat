@@ -101,6 +101,7 @@ function renderHistoryResume() {
             `).join('');
 }
 
+
 function appendToUI(content, role, animate = true) {
 
     if (!hero.classList.contains('hidden')) {
@@ -109,27 +110,67 @@ function appendToUI(content, role, animate = true) {
     }
 
     const wrapper = document.createElement('div');
-    wrapper.className = `flex w-full ${animate ? 'fade-in-up' : ''} ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+    // layout per role
+    if (role === 'user') {
+        wrapper.className = `flex w-full ${animate ? 'fade-in-up' : ''} justify-end`;
+    } else if (role === 'monologue') {
+        wrapper.className = `flex w-full ${animate ? 'fade-in-up' : ''} justify-center`;
+    } else {
+        wrapper.className = `flex w-full ${animate ? 'fade-in-up' : ''} justify-start`;
+    }
 
     const message = document.createElement('div');
+
+    // USER
     if (role === 'user') {
-        message.className = 'user-msg px-5 py-3 rounded-3xl text-[15px] max-w-[80%]';
+        message.className =
+            'user-msg px-5 py-3 rounded-3xl text-[15px] max-w-[80%]';
         message.textContent = content;
-    } else {
+    }
+
+    // MONOLOGUE (thinking / resume box)
+    else if (role === 'monologue') {
+        message.className = `
+            px-6 py-4
+            max-w-[75%]
+            rounded-2xl
+            text-[15px]
+            text-green-200
+            bg-green-900/30
+            border border-green-500/30
+            backdrop-blur
+            text-center
+            italic
+            monologue
+            
+        `;
+        message.id = `monologue-${document.querySelectorAll(".user-msg").length}]`;
+        message.textContent = content;
+    }
+
+    // ASSISTANT (default)
+    else {
         message.className = 'flex space-x-4 w-full';
         message.innerHTML = `
-                    <div class="shrink-0 mt-1">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center">
-                            <svg class="text-white" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
-                        </div>
-                    </div>
-                    <div class="message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
-                `;
+            <div class="shrink-0 mt-1">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center">
+                    <svg class="text-white" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
+        `;
     }
 
     wrapper.appendChild(message);
     messageList.appendChild(wrapper);
-    chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: animate ? 'smooth' : 'auto' });
+
+    chatArea.scrollTo({
+        top: chatArea.scrollHeight,
+        behavior: animate ? 'smooth' : 'auto'
+    });
 }
 
 
@@ -174,10 +215,15 @@ async function handleSend() {
     sendBtn.disabled = true;
 
     setTimeout(async () => {
+
+        appendToUI("Thinking... \n \n", 'monologue');
+        thinking = document.getElementById(`monologue-${document.querySelectorAll(".user-msg").length}]`);
+
         const response = await processMessage(text);
-        showSpinner(false);
+
         appendToUI(response, 'assistant');
         saveMessage(response, 'assistant');
+
     }, 600);
 }
 

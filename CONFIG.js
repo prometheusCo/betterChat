@@ -18,7 +18,5 @@ const CONFIG = {
     max_resume_words_b: 5,
 
     stream: true,
-    stream_info: `Sets api behaviour regarding to return results in streaming or in a big chunk`
-
 
 };
