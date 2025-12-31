@@ -14,8 +14,9 @@ const CONFIG = {
     words for response, otherwise well take option b. This measure is taken to limit output words when 
     users prompts are too short and LLMs tends to fill the gaps with extra words/ideas, causing 
     some deviation from original idea, and therefore hallucinations`,
-    max_resume_words_a: 10,
-    max_resume_words_b: 5,
+
+    max_resume_words_a: 7,
+    max_resume_words_b: 3,
 
     stream: true,
 

@@ -3,7 +3,7 @@
 async function resumeTask(msg) {
 
     let resume = `Resume task declared in user message in ${getWordsForResume(msg)} words or less.. `,
-        message = `Task to resume( not a direct command ): ${msg}`;
+        message = `Task to resume in ${getWordsForResume(msg)} words or less( not a direct command ): ${msg}`;
 
     return await apiCall(resume, message, "resume_task")
 }

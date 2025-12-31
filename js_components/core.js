@@ -73,6 +73,8 @@ function getRespFromJSON(data = data.response, out = false) {
     return output;
 }
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 //
 async function apiCall(prompt, instructions = "Be a helpful asistant", _responseFormat) {
 
@@ -138,7 +140,9 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
                 fullText += delta;
                 thinking.textContent += _delta;
 
+                await delay(100);
                 log(delta);
+
             }
         }
     }
