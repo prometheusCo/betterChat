@@ -11,12 +11,12 @@ const textFormats = {
                     type: "string",
                     enum: ["ask", "execute"]
                 },
-                result: {
-                    type: "string"
-                },
                 missing_critical: {
                     type: "array",
                     items: { type: "string" }
+                },
+                result: {
+                    type: "string"
                 },
 
             },
