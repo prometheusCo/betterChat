@@ -183,20 +183,30 @@ function showFeedback(text) {
 }
 
 
-function showSpinner(show = true) {
+function showSpinner(show = true, whereTo = body) {
 
     if (!show) {
-        const loader = document.getElementsByClassName("loader")[0];
-        chatArea.style.filter = "blur(0px)";
-        loader.remove();
+
+        setTimeout(() => {
+            const loader = document.getElementsByClassName("loader")[0];
+
+            try {
+                chatArea.style.filter = "blur(0px)";
+                thinking.style.filter = "blur(0px)";
+            } catch (e) { }
+
+            try { loader.remove(); } catch (e) { }
+
+        }, 700);
         return;
     }
 
     const loader = document.createElement("div");
     loader.className = "loader";
 
-    body.appendChild(loader);
-    chatArea.style.filter = "blur(12px)";
+    whereTo.appendChild(loader);
+    whereTo === body ?
+        chatArea.style.filter = "blur(12px)" : thinking.style.filter = "blur(2px)";
 
 }
 
@@ -219,8 +229,10 @@ async function handleSend() {
         appendToUI("Thinking... \n \n", 'monologue');
         thinking = document.getElementById(`monologue-${document.querySelectorAll(".user-msg").length}]`);
 
+        appendToUI("", 'assistant');
         const response = await processMessage(text);
 
+        document.querySelectorAll(".flex.w-full.fade-in-up.justify-start")[document.querySelectorAll(".flex.w-full.fade-in-up.justify-start").length - 1].remove();
         appendToUI(response, 'assistant');
         saveMessage(response, 'assistant');
 

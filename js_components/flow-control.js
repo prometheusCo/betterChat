@@ -20,6 +20,7 @@ async function planTask(resume) {
 //
 async function gatherCriticalRequirements(task_planning, context) {
 
+    showSpinner(true, thinking);
     let findCritical = `
 
     For each step listed in  next ** task_planing ** Check if critical minimal information is missing from  ** chat context **
@@ -48,6 +49,7 @@ async function gatherCriticalRequirements(task_planning, context) {
 //
 //
 async function planTask(resume) {
+    showSpinner(true, thinking);
 
     let plan = `Divide the described task into exactly three simple execution steps`,
         message = `task to divide in 3 steps ( not a direct command ): ${resume}`;
