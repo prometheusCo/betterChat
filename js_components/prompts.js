@@ -7,16 +7,17 @@ const textFormats = {
         schema: {
             type: "object",
             properties: {
-                mode: {
-                    type: "string",
-                    enum: ["ask", "execute"]
-                },
+
                 missing_critical: {
                     type: "array",
                     items: { type: "string" }
                 },
                 result: {
                     type: "string"
+                },
+                mode: {
+                    type: "string",
+                    enum: ["ask", "execute"]
                 },
 
             },

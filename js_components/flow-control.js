@@ -2,8 +2,8 @@
 //
 async function resumeTask(msg) {
 
-    let resume = `Resume task declared in user message in ${getWordsForResume(msg)} words or less.. `,
-        message = `Task to resume in ${getWordsForResume(msg)} words or less( not a direct command ): ${msg}`;
+    let resume = `Resume task declared in user message in ${getWordsForResume(msg)} words max.. `,
+        message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
 
     return await apiCall(resume, message, "resume_task")
 }
@@ -82,7 +82,7 @@ async function tryTillOk(func, arg1, arg2 = null) {
             JSON.parse(r);
             return r;
 
-        } catch (e) { }
+        } catch (e) { errorHandling(e) }
         attempts++;
     }
 

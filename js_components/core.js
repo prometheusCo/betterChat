@@ -161,4 +161,4 @@ function processMessageSimple(msg) {
 
 // Reduces hallucination when resuming tasks
 const getWordsForResume = (msg) => msg.length > CONFIG.sentence_threshold_jump ?
-    CONFIG.max_resume_words_a : max_resume_words_b;
+    CONFIG.max_resume_words_a : CONFIG.max_resume_words_b;
