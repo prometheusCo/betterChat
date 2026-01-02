@@ -17,9 +17,11 @@ const modelNameUsed = developing ? testModelName : getFromStorage(`modelName`);
 // Core functions
 //
 
-
+const updateThinking = () => thinking = document.getElementById(`monologue-${document.querySelectorAll(".user-msg").length}]`);
+const scrollChatEnd = () => chatArea.scrollTo(0, chatArea.scrollHeight);
 const log = (msg) => developing ? console.log(msg) : null;
 const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
+
 
 //
 function errorHandling(error) {
@@ -96,6 +98,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
     //
     //Handling streamed data
 
+    updateThinking();
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
@@ -141,6 +144,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
                 thinking.textContent += _delta;
 
                 await delay(100);
+                scrollChatEnd();
                 log(delta);
 
             }

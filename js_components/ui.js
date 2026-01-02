@@ -227,10 +227,9 @@ async function handleSend() {
     setTimeout(async () => {
 
         appendToUI("Thinking... \n \n", 'monologue');
-        thinking = document.getElementById(`monologue-${document.querySelectorAll(".user-msg").length}]`);
-
         appendToUI("", 'assistant');
         const response = await processMessage(text);
+        scrollChatEnd();
 
         document.querySelectorAll(".flex.w-full.fade-in-up.justify-start")[document.querySelectorAll(".flex.w-full.fade-in-up.justify-start").length - 1].remove();
         appendToUI(response, 'assistant');
