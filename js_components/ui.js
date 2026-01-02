@@ -160,7 +160,7 @@ function appendToUI(content, role, animate = true) {
                     </svg>
                 </div>
             </div>
-            <div class="message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
+            <div class="user_message message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
         `;
     }
 

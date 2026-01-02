@@ -18,6 +18,8 @@ const modelNameUsed = developing ? testModelName : getFromStorage(`modelName`);
 //
 
 const updateThinking = () => thinking = document.getElementById(`monologue-${document.querySelectorAll(".user-msg").length}]`);
+const updateLastUserMsg = () => lastUserMsg = document.getElementsByClassName("user_message")[document.getElementsByClassName("user_message").length - 1]
+
 const scrollChatEnd = () => chatArea.scrollTo(0, chatArea.scrollHeight);
 const log = (msg) => developing ? console.log(msg) : null;
 const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
@@ -78,16 +80,21 @@ function getRespFromJSON(data = data.response, out = false) {
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 //
-async function apiCall(prompt, instructions = "Be a helpful asistant", _responseFormat) {
+async function apiCall(prompt, instructions = "Be a helpful asistant", _responseFormat = "", showThinking = true) {
 
     const input = [];
 
     const response = await fetch(CONFIG.endPointUrl, {
+
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${keyUsed.trim()}`
         },
+        temperature: 0.1,
+        top_p: 1.0,
+        presence_penalty: 0,
+        frequency_penalty: 0,
         body: JSON.stringify(makeJSON(prompt, instructions, _responseFormat))
     });
 
@@ -99,6 +106,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
     //Handling streamed data
 
     updateThinking();
+    updateLastUserMsg();
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
@@ -141,7 +149,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
                 let _delta = delta.replace(/[{}]/g, "");
 
                 fullText += delta;
-                thinking.textContent += _delta;
+                showThinking ? thinking.textContent += _delta : lastUserMsg.textContent += delta;
 
                 await delay(100);
                 scrollChatEnd();

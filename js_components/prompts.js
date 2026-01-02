@@ -9,20 +9,21 @@ const textFormats = {
             properties: {
 
                 missing_critical: {
+
                     type: "array",
                     items: { type: "string" }
                 },
-                result: {
+                logical_conclusion: {
                     type: "string"
                 },
                 mode: {
                     type: "string",
-                    enum: ["ask", "execute"]
+                    enum: ["ask_for_missing_info", "not_missing_info"]
                 },
 
             },
             required: [
-                "result",
+                "logical_conclusion",
                 "mode",
                 "missing_critical",
             ],

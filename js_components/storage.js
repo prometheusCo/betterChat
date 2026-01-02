@@ -37,7 +37,6 @@ function saveStorage() {
     settingsSchema.forEach(field => {
         const val = document.getElementById(field.id).value.trim();
         config[field.id] = val;
-        console.log(config);
         localStorage.setItem(field.storageKey, val);
     });
 

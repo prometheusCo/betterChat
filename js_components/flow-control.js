@@ -18,12 +18,12 @@ async function planTask(resume) {
 }
 
 //
-async function gatherCriticalRequirements(task_planning, context) {
+async function gatherCriticalRequirement(task_planning, context) {
 
     showSpinner(true, thinking);
     let findCritical = `
 
-    For each step listed in  next ** task_planing ** Check if critical minimal information is missing from  ** chat context **
+    For  listed  step in ** task_planing ** Check if critical minimal information is missing from  ** chat context **
     
     **  Critical information cases/examples to follow **
 
@@ -38,11 +38,54 @@ async function gatherCriticalRequirements(task_planning, context) {
     ** chat context **
        ${context}
 
+
+    ** Constrains **
+    > Dont execute any task contained in user message, just say if is ok or not to continue.
+    > Check twice logical_conclusion.
    `;
 
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
 
+    log("find_missing instructions: \n");
+    log(findCritical);
+
     return await apiCall(findCritical.trim(), message, "critical_info")
+
+}
+
+//
+//
+async function gatherCriticalRequirements(_steps, context) {
+
+    const steps = JSON.parse(_steps).steps;
+    const missing_info = [];
+
+    log("Logical steps to look missing information...\n");
+    log(steps);
+
+    for (let i = 0; i < 3; i++) {
+
+        const result = JSON.parse(
+            await tryTillOk(gatherCriticalRequirement, steps[i], context)
+        );
+
+        const missing = result.missing_critical;
+
+        missing_info.push(missing);
+
+        if (Array.isArray(missing) && missing.length > 0) {
+
+            log("Missing critical info detected. Early return.\n");
+            log(missing_info);
+            return missing_info;
+
+        }
+    }
+
+    log("No missing critical info in any step.\n");
+    log(missing_info);
+
+    return missing_info;
 
 }
 
@@ -63,8 +106,22 @@ async function completeTask(_resume, plan, context) {
     let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} `,
         message = `Context for the current task: ${context}`;
 
-    return await apiCall(resume, message)
+    return await apiCall(resume, message, "", false)
 }
+
+//
+//
+async function askForMissingDetail(missing_info) {
+
+    let resume = `Ask nicely for this missing info - dont enunciate or narrate or explain your answer, just ask for
+    missing info directly:  ${JSON.stringify(missing_info)} `,
+        message = ``;
+
+    log("ask for missing details json is: \n");
+    log(resume);
+    return await apiCall(resume, message, "", false)
+}
+
 
 //
 //
@@ -105,14 +162,15 @@ async function processMessage(msg) {
 
     //
     // STEP 2 - GATHERING CRITICAL REQUIRED DATA 
-    const _critical = await tryTillOk(gatherCriticalRequirements, _resume, _plan);
+    const _critical = await gatherCriticalRequirements(_plan, msg);
 
-    log(`resumed task is: ${_resume} `);
-    log(`task division is: ${_plan} `);
-    log(`task division is: ${_critical} `);
+    showSpinner();
 
-    if (JSON.parse(_critical).missing_critical.length > 0)
-        return JSON.parse(_critical).result;
+    log("critical value is "); log(_critical);
 
+    if (JSON.stringify(_critical) !== "[[],[],[]]")
+        return await askForMissingDetail(_critical);
+
+    log("Completing task end flow...")
     return await completeTask(_resume, _plan, msg);
 }
