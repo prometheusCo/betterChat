@@ -8,3 +8,6 @@ const body = document.getElementsByClassName('body')[0];
 
 let lastUserMsg = null;
 let thinking = null;
+
+let userMSGs = document.querySelectorAll(".user-msg");
+

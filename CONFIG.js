@@ -20,4 +20,7 @@ const CONFIG = {
 
     stream: true,
 
+    contextStep: 1,
+    maxContextDepth: 5,
+
 };

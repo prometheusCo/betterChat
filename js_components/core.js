@@ -24,11 +24,21 @@ const scrollChatEnd = () => chatArea.scrollTo(0, chatArea.scrollHeight);
 const log = (msg) => developing ? console.log(msg) : null;
 const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
 
-
 //
-function errorHandling(error) {
-    log(error);
-    throw new Error(error);
+function errorHandling(errorCode, error = null) {
+
+    try {
+
+        let e = new errorCode();
+        !!e.action ? e.action() : null
+
+        throw e;
+
+    } catch (e) {
+        throw new Error(error);
+    }
+    return;
+
 }
 
 const isValid = v => v !== undefined && v !== null && v !== "";
@@ -38,7 +48,7 @@ function promptCheck(prompt) {
 
     if (isValid(prompt)) return true;
 
-    errorHandling(`Prompt empty please provide one!`);
+    errorHandling(EPG);
 }
 
 //
@@ -73,7 +83,7 @@ function getRespFromJSON(data = data.response, out = false) {
 
     } catch (e) { output = data.response; }
 
-    if (!output) errorHandling(`bad response from API Server. \n Server full respose was: ${JSON.stringify(data)}`);
+    if (!output) errorHandling();
     return output;
 }
 
@@ -153,7 +163,6 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
 
                 await delay(100);
                 scrollChatEnd();
-                log(delta);
 
             }
         }

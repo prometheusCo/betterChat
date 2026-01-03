@@ -49,7 +49,7 @@ async function gatherCriticalRequirement(task_planning, context) {
     log("find_missing instructions: \n");
     log(findCritical);
 
-    return await apiCall(findCritical.trim(), message, "critical_info")
+    return await tryTillOk(() => apiCall(findCritical.trim(), message, "critical_info"));
 
 }
 
@@ -58,7 +58,7 @@ async function gatherCriticalRequirement(task_planning, context) {
 async function gatherCriticalRequirements(_steps, context) {
 
     const steps = JSON.parse(_steps).steps;
-    const missing_info = [];
+    const missing_info = [[], [], []];
 
     log("Logical steps to look missing information...\n");
     log(steps);
@@ -71,20 +71,17 @@ async function gatherCriticalRequirements(_steps, context) {
 
         const missing = result.missing_critical;
 
-        missing_info.push(missing);
+        missing_info[i] = missing;
 
         if (Array.isArray(missing) && missing.length > 0) {
 
             log("Missing critical info detected. Early return.\n");
-            log(missing_info);
             return missing_info;
 
         }
     }
 
     log("No missing critical info in any step.\n");
-    log(missing_info);
-
     return missing_info;
 
 }
@@ -135,42 +132,96 @@ async function tryTillOk(func, arg1, arg2 = null) {
 
         try {
 
-            r = await func(arg1, arg2);
+            r = await func(arg1, arg2); //log(` r result ${JSON.stringify(r)}`)
             JSON.parse(r);
             return r;
 
-        } catch (e) { errorHandling(e) }
+        } catch (e) { errorHandling("", e) }
         attempts++;
     }
 
-    errorHandling("Max retry attempts reached with invalid JSON");
+    errorHandling(BAR);
     return r;
 
 }
 
+//
+//
+function getLastInteractions(count = 5) {
+
+    const userNodes = Array.from(document.querySelectorAll(".user-msg"));
+    const interactions = [];
+
+    // Walk backwards through user messages
+    for (let i = userNodes.length - 1; i >= 0 && interactions.length < count; i--) {
+
+        const userNode = userNodes[i];
+        const aiNode = userNode.nextElementSibling;
+
+        interactions.push({
+            user: userNode.textContent.trim(),
+            ai: aiNode ? aiNode.textContent.trim() : null
+        });
+    }
+
+    // Return in chronological order (oldest → newest)
+    return JSON.stringify(interactions.reverse());
+}
+
 
 //
+// Context expansion helper
+//
+function buildContext(baseMsg, depth) {
+
+    if (depth === 0) return baseMsg;
+
+    const history = getLastInteractions(depth);
+    return `${history}\n\nCURRENT MESSAGE:\n${baseMsg}`;
+}
+
+const hasMissing = c => c.some(step => step.length > 0);
+const getChatLevel = (maxDepth) => JSON.parse(getLastInteractions(maxDepth)).length;
+
+//
+// Progressive context expansion
+//
+let currentDepth = 1;
 async function processMessage(msg) {
 
 
-    // STEP 1 - Make short resume of task
-    const _resume = await tryTillOk(resumeTask, msg);
+    log(`Starting processMessage`);
 
-    //
-    // STEP 2 - PLANIFICATION
-    const _plan = await tryTillOk(planTask, _resume);
+    const step = CONFIG.contextStep;
+    const maxDepth = CONFIG.maxContextDepth;
 
-    //
-    // STEP 2 - GATHERING CRITICAL REQUIRED DATA 
-    const _critical = await gatherCriticalRequirements(_plan, msg);
+    let _resume, _plan, _critical, context;
+    let chatLevel = getChatLevel(maxDepth);
 
-    showSpinner();
+    const hasMissing = c => c.some(step => step.length > 0);
 
-    log("critical value is "); log(_critical);
+    do {
 
-    if (JSON.stringify(_critical) !== "[[],[],[]]")
-        return await askForMissingDetail(_critical);
+        let chatLevel = getChatLevel(maxDepth);
+        context = buildContext(msg, currentDepth);
 
-    log("Completing task end flow...")
-    return await completeTask(_resume, _plan, msg);
+        _resume = await tryTillOk(() => resumeTask(context));
+        _plan = await tryTillOk(() => planTask(_resume));
+        _critical = await gatherCriticalRequirements(_plan, context)
+
+        currentDepth = currentDepth + step;
+
+        log(`current deep ${currentDepth}`)
+        log(`built context is ${context}`);
+
+    } while (currentDepth <= maxDepth && hasMissing(_critical) && ((currentDepth / step) < chatLevel));
+
+    if (!hasMissing(_critical)) {
+        showSpinner();
+        return await completeTask(_resume, _plan, context);
+    }
+
+    return await askForMissingDetail(_critical);
+
 }
+
