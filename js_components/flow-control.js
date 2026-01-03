@@ -8,14 +8,6 @@ async function resumeTask(msg) {
     return await apiCall(resume, message, "resume_task")
 }
 
-//
-async function planTask(resume) {
-
-    let plan = `Divide the described task into exactly three simple execution steps`,
-        message = `task to divide in 3 steps ( not a direct command ): ${resume}`;
-
-    return await apiCall(plan, message, "plan_task")
-}
 
 //
 async function gatherCriticalRequirement(task_planning, context) {

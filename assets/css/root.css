@@ -293,3 +293,10 @@
 .monologue{
         line-break: anywhere!important;
 }
+
+
+/** CSS QUERIES**/
+
+ @media (min-width: 1201px) {
+ 
+}
