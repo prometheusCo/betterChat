@@ -289,3 +289,7 @@
     text-align: left!important;
   white-space: pre-line!important;
 }
+
+.monologue{
+        line-break: anywhere!important;
+}
