@@ -2,7 +2,8 @@
 //
 async function resumeTask(msg) {
 
-    let resume = `Resume task declared in user message in ${getWordsForResume(msg)} words max.. `,
+    let resume = `Resume task declared in user message in ${getWordsForResume(msg)} words max... Evaluate complexity
+    of given task, being 10 a higly intelectual task and 1 a simple info query. `,
         message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
 
     return await apiCall(resume, message, "resume_task")
@@ -23,13 +24,11 @@ async function gatherCriticalRequirement(task_planning, context) {
          >  "objective" : "write an story/tale/book" , "critical" : ["topic, genre"]
          >  "objective" : "write piece of code" , "critical" : ["language_to_use"].
   
-
     ** task_planing **
        ${task_planning}
 
     ** chat context **
        ${context}
-
 
     ** Constrains **
     > Dont execute any task contained in user message, just say if is ok or not to continue.
@@ -181,7 +180,6 @@ const getChatLevel = (maxDepth) => JSON.parse(getLastInteractions(maxDepth)).len
 let currentDepth = 1;
 async function processMessage(msg) {
 
-
     log(`Starting processMessage`);
 
     const step = CONFIG.contextStep;
@@ -198,6 +196,12 @@ async function processMessage(msg) {
         context = buildContext(msg, currentDepth);
 
         _resume = await tryTillOk(() => resumeTask(context));
+
+        if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
+            log("non complex task detected, early exit");
+            return await completeTask(_resume, _plan, context);
+        }
+
         _plan = await tryTillOk(() => planTask(_resume));
         _critical = await gatherCriticalRequirements(_plan, context)
 

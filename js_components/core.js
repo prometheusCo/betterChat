@@ -4,7 +4,7 @@ const t0 = developing ? performance.now() : false;
 
 
 // For use only in developing (gpt test key will be retired from open ai API dashboard after developement is done)
-const testModelName = `gpt-4.1-mini`;
+const testModelName = `gpt-5.2`;
 const gptTestKey = `${ENV.gptTestKey}`;// ENV obj is in a GIT ommited file so relax...
 
 // Getting auth data from storage logic if in production.

@@ -2,9 +2,12 @@ const textFormats = {
 
 
     critical_info: {
+
         name: "critical_info",
         type: "json_schema",
+
         schema: {
+
             type: "object",
             properties: {
 
@@ -33,14 +36,20 @@ const textFormats = {
 
 
     resume_task: {
+
         name: "resume_task",
         type: "json_schema",
+
         schema: {
             type: "object",
             properties: {
                 resume: { type: "string" },
+                complexity_level_from_1_to_10: { type: "integer" }
             },
-            required: ["resume"],
+            required: [
+                "resume",
+                "complexity_level_from_1_to_10"
+            ],
             additionalProperties: false
         }
     },
