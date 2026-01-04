@@ -24,6 +24,7 @@ const scrollChatEnd = () => chatArea.scrollTo(0, chatArea.scrollHeight);
 const log = (msg) => developing ? console.log(msg) : null;
 const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
 
+
 //
 function errorHandling(errorCode, error = null) {
 
@@ -183,3 +184,8 @@ function processMessageSimple(msg) {
 // Reduces hallucination when resuming tasks
 const getWordsForResume = (msg) => msg.length > CONFIG.sentence_threshold_jump ?
     CONFIG.max_resume_words_a : CONFIG.max_resume_words_b;
+
+
+function saveResumesHistory(resume) {
+
+}

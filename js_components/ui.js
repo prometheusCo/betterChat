@@ -23,12 +23,15 @@ const faqData = [
         title: "Can I use different models?",
         content: "BetterChat currently supports the  Open AI API. Support for additional APIs will be added in the future. Therefore all Open AI models are available."
     }
+
 ];
 
 
 const settingsSchema = [
-    { id: 'model', label: 'Model Name', placeholder: 'e.g. gpt-4o, gemini-pro', type: 'text', storageKey: 'ai_model_name' },
-    { id: 'apiKey', label: 'API Key', placeholder: 'sk-...', type: 'password', storageKey: 'ai_api_key' }
+
+    { id: 'model', label: 'Model Name', placeholder: 'e.g. gpt-4o, gpt-5.2...', type: 'text', storageKey: 'model', value: "" },
+    { id: 'apiKey', label: 'API Key', placeholder: 'sk-...', type: 'password', storageKey: 'apiKey', value: "" },
+
 ];
 
 
@@ -41,20 +44,38 @@ const chat_resume = [
 // Rendering functions
 //
 //
+async function renderSettings() {
 
-function renderSettings() {
     const wrapper = document.getElementById('dynamic-settings-wrapper');
+    let settingsSchemaDecrypted = JSON.parse(JSON.stringify(settingsSchema));
 
-    wrapper.innerHTML = settingsSchema.map(field => `
-                <div class="space-y-1.5">
+    async function helper() {
+
+        for (let index = 0; index < settingsSchema.length; index++) {
+
+            const _key = settingsSchema[index].storageKey;
+            const _value = await loadFromStorage(_key);
+            settingsSchemaDecrypted[index].value = _value;
+        }
+    }
+
+    helper().then(() => {
+
+        wrapper.innerHTML = settingsSchemaDecrypted.map(field => `
+    
+            <div class="space-y-1.5">
                     <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 ml-1" for="${field.id}">${field.label}</label>
                     <input id="${field.id}" type="${field.type}" class="setting-input" 
-                           placeholder="${field.placeholder}" value="${config[field.id] || ''}">
+                           placeholder="${field.placeholder}" value="${field.value || ''}">
                 </div>
             `).join('');
 
+    })
+
     const memInput = document.getElementById('memory-input');
-    if (memInput) memInput.value = config.memory;
+    if (memInput) memInput.value = await loadFromStorage("ai_memory");
+
+
 }
 
 function renderFAQ() {
@@ -74,6 +95,7 @@ function renderFAQ() {
 
     // Add click events for accordion
     document.querySelectorAll('.faq-trigger').forEach(trigger => {
+
         trigger.addEventListener('click', () => {
             const item = trigger.closest('.faq-item');
             const isActive = item.classList.contains('active');
@@ -89,6 +111,7 @@ function renderFAQ() {
 
 
 function renderHistoryResume() {
+
     const list = document.getElementById('resume-list');
     if (!list) return;
     list.innerHTML = chat_resume.map(item => `
@@ -175,11 +198,13 @@ function appendToUI(content, role, animate = true) {
 
 
 function showFeedback(text) {
+
     const feedback = document.createElement('div');
     feedback.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-2 rounded-full text-sm shadow-lg fade-in-up z-50";
     feedback.textContent = text;
     document.body.appendChild(feedback);
     setTimeout(() => feedback.remove(), 2500);
+
 }
 
 
@@ -255,3 +280,13 @@ function developTestMsg() {
 }
 
 
+async function loadChatHistory() {
+
+    const raw = await loadFromStorage("chat_history");
+    chatHistory = raw ? JSON.parse(raw) : [];
+
+    chatHistory.forEach(msg => {
+        appendToUI(msg.content, msg.role, false);
+    });
+
+}

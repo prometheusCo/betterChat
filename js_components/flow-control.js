@@ -80,6 +80,7 @@ async function gatherCriticalRequirements(_steps, context) {
 //
 //
 async function planTask(resume) {
+
     showSpinner(true, thinking);
 
     let plan = `Divide the described task into exactly three simple execution steps`,
@@ -94,6 +95,7 @@ async function completeTask(_resume, plan, context) {
     let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} `,
         message = `Context for the current task: ${context}`;
 
+    saveResumesHistory(_resume);
     return await apiCall(resume, message, "", false)
 }
 
@@ -171,6 +173,14 @@ function buildContext(baseMsg, depth) {
     return `${history}\n\nCURRENT MESSAGE:\n${baseMsg}`;
 }
 
+
+//
+//
+function saveResumesHistory(resume) {
+
+}
+
+
 const hasMissing = c => c.some(step => step.length > 0);
 const getChatLevel = (maxDepth) => JSON.parse(getLastInteractions(maxDepth)).length;
 
@@ -198,6 +208,7 @@ async function processMessage(msg) {
         _resume = await tryTillOk(() => resumeTask(context));
 
         if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
+
             log("non complex task detected, early exit");
             return await completeTask(_resume, _plan, context);
         }

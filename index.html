@@ -303,29 +303,17 @@
 
         window.onload = () => {
 
-            if (chatHistory.length > 0) {
-                chatHistory.forEach(msg => appendToUI(msg.content, msg.role, false));
-            }
-
-            // Hydrate config object from storage based on schema
-            let config = {
-                memory: localStorage.getItem('ai_memory') || ''
-            };
-            settingsSchema.forEach(field => {
-                config[field.id] = localStorage.getItem(field.storageKey) || '';
-            });
-
+            loadChatHistory();
+        
             // Load FAQ content
             renderFAQ();
 
             // Load Settings content
             renderSettings();
 
-            // Filling history context resume
-            renderHistoryResume();
-
             // Settings  dom events
             setEvents();
+
 
             developTestMsg();
         };

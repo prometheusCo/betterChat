@@ -14,7 +14,26 @@ function setEvents() {
     document.getElementById('history-modal').addEventListener('click', () => toggleHistory(false));
 
     document.getElementById('save-settings').addEventListener('click', () => {
-        saveStorage();
+
+        // Save dynamic fields
+        settingsSchema.forEach(field => {
+
+            const val = document.getElementById(field.id).value.trim();
+            settingsSchema[field.id] = val;
+            settingsSchema[field.storageKey] = val;
+
+            saveStorage([field.id], val);
+
+        });
+
+        //
+        // Save memory
+        settingsSchema.memory = document.getElementById('memory-input').value.trim();
+        saveStorage('ai_memory', settingsSchema.memory);
+
+        toggleSettings(false);
+        showFeedback("Configuration updated");
+
     });
 
     // Info/FAQ Listeners
