@@ -106,7 +106,7 @@ async function completeTask(_resume, plan, context) {
     let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} .`,
         message = `Context for the current task: ${context}.`;
 
-    currentDepth = 1;
+    currentDepth = CONFIG.base_deep;
     saveResumesHistory(_resume);
     return await apiCall(resume, message, "", false);
 
@@ -214,7 +214,7 @@ const getChatLevel = (maxDepth) => JSON.parse(getLastInteractions(maxDepth)).len
 // Main flow code...
 //
 //
-let currentDepth = 1;
+let currentDepth = CONFIG.base_deep;
 async function processMessage(msg) {
 
     const step = CONFIG.contextStep;

@@ -27,4 +27,5 @@ const CONFIG = {
 
     max_suggested_tags: 5,
 
+    base_deep: 2,
 };
