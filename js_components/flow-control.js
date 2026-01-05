@@ -92,8 +92,8 @@ async function planTask(resume) {
 
 async function completeTask(_resume, plan, context) {
 
-    let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} `,
-        message = `Context for the current task: ${context}. Deliver result in formated text.`;
+    let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} .`,
+        message = `Context for the current task: ${context}.`;
 
     saveResumesHistory(_resume);
     return await apiCall(resume, message, "", false)
@@ -112,6 +112,14 @@ async function askForMissingDetail(missing_info) {
     return await apiCall(resume, message, "", false)
 }
 
+async function createTags(_resume) {
+
+    let tags = `Given this topic: {{ ${_resume} }}, suggest 3 to ${CONFIG.max_suggested_tags} dive in related topics,
+    so user can learn more about it.`,
+        message = ``;
+
+    return await apiCall(tags, message, "cloud_tags", false);
+}
 
 //
 //
@@ -191,12 +199,12 @@ const hasMissing = c => c.some(step => step.length > 0);
 const getChatLevel = (maxDepth) => JSON.parse(getLastInteractions(maxDepth)).length;
 
 //
-// Progressive context expansion
+//
+// Main flow code...
+//
 //
 let currentDepth = 1;
 async function processMessage(msg) {
-
-    log(`Starting processMessage`);
 
     const step = CONFIG.contextStep;
     const maxDepth = CONFIG.maxContextDepth;
@@ -216,6 +224,8 @@ async function processMessage(msg) {
         if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
 
             log("non complex task detected, early exit");
+
+            createTags(_resume).then((tags) => related_tags = tags);
             return await completeTask(_resume, _plan, context);
         }
 

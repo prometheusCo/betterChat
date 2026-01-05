@@ -295,6 +295,56 @@
 }
 
 
+.learning-active {
+    background-color: rgb(110 109 247) !important;
+        color: white!important;
+
+}
+
+
+
+/* Tag Cloud Container */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    /* Visual separator from the message text */
+    border-top: 1px dashed var(--border-color);
+}
+
+/* Individual Tag Item */
+.tag-item {
+    /* Uses dynamic variables based on theme */
+    background-color: var(--tag-bg);
+    color: var(--tag-text);
+    
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* Prevents text selection when clicking rapidly */
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Hover effects */
+.tag-item:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+/* Active/Click state */
+.tag-item:active {
+    transform: translateY(0);
+    filter: brightness(0.9);
+}
+
 /** CSS QUERIES**/
 
  @media (min-width: 1201px) {

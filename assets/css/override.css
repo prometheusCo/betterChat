@@ -4,3 +4,13 @@
     margin-left: auto!important ;
     margin-right: auto !important;
 }
+
+
+.user_message {
+    font-size: 15px!important;
+}
+
+
+#learning-button{
+    padding: 7px!important;
+}

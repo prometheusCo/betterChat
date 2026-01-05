@@ -2,6 +2,7 @@
 // For measurimg global exec time
 const t0 = developing ? performance.now() : false;
 let modelNameUsed = null;
+let related_tags;
 
 //Model name is not critical info so it can be decrypted here
 loadFromStorage(`model`).then((key) => modelNameUsed = key)
@@ -55,7 +56,7 @@ function makeJSON(prompt, instructions, _responseFormat = false) {
 
     body.input = input;
     body.model = modelNameUsed;
-    body.stream = CONFIG.stream;
+    body.stream = _responseFormat !== "cloud_tags" ? CONFIG.stream : false;
 
     if (!_responseFormat) return body;
 
@@ -100,10 +101,10 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
         top_p: 1.0,
         presence_penalty: 0,
         frequency_penalty: 0,
-        body: JSON.stringify(makeJSON(prompt, instructions, _responseFormat))
+        body: JSON.stringify(makeJSON(prompt, instructions, (_responseFormat === "" ? false : _responseFormat)))
     });
 
-    if (!CONFIG.stream)
+    if (!CONFIG.stream || _responseFormat === "cloud_tags")
         return getRespFromJSON(await response.json());
 
     try { showSpinner(false); } catch (error) { }
@@ -180,6 +181,13 @@ const getWordsForResume = (msg) => msg.length > CONFIG.sentence_threshold_jump ?
     CONFIG.max_resume_words_a : CONFIG.max_resume_words_b;
 
 
-function saveResumesHistory(resume) {
+function setLearningMode() {
+
+    const learningMode = localStorage.getItem(`learningMode`) ?? "false";
+
+    if (learningMode !== "true")
+        return;
+
+    learningButton.classList.add("learning-active");
 
 }

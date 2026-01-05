@@ -72,10 +72,34 @@ const textFormats = {
         }
     },
 
+
+    cloud_tags: {
+
+        name: "related_dive_in_topics",
+        type: "json_schema",
+
+        schema: {
+            type: "object",
+            properties: {
+                related_dive_in_topics: {
+                    type: "array",
+                    items: { type: "string" },
+                    minItems: 3,
+                    maxItems: 5
+                }
+            },
+            required: [
+                "related_dive_in_topics"
+            ],
+            additionalProperties: false
+        }
+    },
+
     out_fields: {
 
         resume_task: "steps",
         critical_info: "missing_critical",
+        related_topics: "cloud_tags"
 
     }
 

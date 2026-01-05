@@ -25,4 +25,6 @@ const CONFIG = {
 
     complexity_level_threshold: 3,
 
+    max_suggested_tags: 5,
+
 };

@@ -257,6 +257,36 @@ function showSpinner(show = true, whereTo = body) {
 
 }
 
+//
+//
+async function learningTagsHandle() {
+
+    tags = JSON.parse(related_tags).related_dive_in_topics;
+
+    const learningMode = localStorage.getItem("learningMode") ?? "false";
+    if (learningMode === "false" || !Array.isArray(tags) || tags.length === 0) return;
+
+    updateLastUserMsg();
+
+    log(`tags are \n`);
+    log(tags);
+
+    const tagCloud = document.createElement("div");
+    tagCloud.className = "tag-cloud";
+
+    tags.forEach(tag => {
+
+        const tagItem = document.createElement("span");
+        tagItem.className = "tag-item";
+        tagItem.textContent = tag;
+        tagCloud.appendChild(tagItem);
+    });
+    lastUserMsg.appendChild(tagCloud);
+}
+
+
+//
+//
 async function handleSend() {
 
     showSpinner();
@@ -278,9 +308,14 @@ async function handleSend() {
         const response = await processMessage(text);
         scrollChatEnd();
 
-        document.querySelectorAll(".flex.w-full.fade-in-up.justify-start")[document.querySelectorAll(".flex.w-full.fade-in-up.justify-start").length - 1].remove();
-        appendToUI(response, 'assistant');
+        if (!CONFIG.stream) {
+
+            document.querySelectorAll(".flex.w-full.fade-in-up.justify-start")[document.querySelectorAll(".flex.w-full.fade-in-up.justify-start").length - 1].remove();
+            appendToUI(response, 'assistant');
+
+        }
         saveMessage(response, 'assistant');
+        learningTagsHandle();
 
     }, 600);
 }

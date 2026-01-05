@@ -88,3 +88,16 @@ document.getElementById('history-button').onclick = () => {
     renderHistoryResume();
 };
 
+
+function toggleLearningMode() {
+    const btn = document.getElementById("learning-button");
+
+    const current = localStorage.getItem("learningMode") === "true";
+    const next = !current;
+
+    localStorage.setItem("learningMode", String(next));
+    btn.classList.toggle("learning-active", next);
+}
+
+
+document.getElementById("learning-button").addEventListener("click", toggleLearningMode);
