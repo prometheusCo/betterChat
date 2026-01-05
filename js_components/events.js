@@ -47,7 +47,6 @@ function setEvents() {
     document.getElementById('info-btn').addEventListener('click', () => toggleInfo(true));
     document.getElementById('close-info').addEventListener('click', () => toggleInfo(false));
     document.getElementById('close-history').addEventListener('click', () => toggleHistory(false));
-    document.getElementById('close-history').addEventListener('click', () => toggleHistory(false));
     document.getElementById('delete-modal').onclick = () => toggleDelete(false);
 
     document.getElementById('delete-storage-btn').onclick = () => toggleDelete(true);

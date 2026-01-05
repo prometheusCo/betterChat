@@ -23,7 +23,7 @@ const CONFIG = {
     contextStep: 1,
     maxContextDepth: 5,
 
-    complexity_level_threshold: 3,
+    complexity_level_threshold: 5.5,
 
     max_suggested_tags: 5,
 

@@ -187,10 +187,10 @@ function appendToUI(content, role, animate = true) {
             text-center
             italic
             monologue
-            text-[var(--text-main)
+            text-[var(--text-main)]
             
         `;
-        message.id = `monologue-${document.querySelectorAll(".user-msg").length}]`;
+        message.id = `monologue-${document.querySelectorAll(".user-msg").length}`;
         message.textContent = content;
     }
 

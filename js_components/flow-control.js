@@ -2,9 +2,17 @@
 //
 async function resumeTask(msg) {
 
-    let resume = `Resume task declared in user message in ${getWordsForResume(msg)} words max... Evaluate complexity
-    of given task, being 10 a higly intelectual task and 1 a simple info query and 2 a query for a definition `,
-        message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
+    let resume = `
+    1 - Resume task declared in user message in ${getWordsForResume(msg)} words max... 
+    2 - Evaluate complexity of given task following this scale (0.1 to 9.9):
+        
+         ** Asking for information about something would be scaled lower than 5 **
+         ** Asking for information about someone would be scaled lower than 5 **
+
+         ** Any request that involves creativity would be rate from 5 to 10 **
+         `
+
+    message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
 
     return await apiCall(resume, message, "resume_task")
 }
@@ -98,8 +106,10 @@ async function completeTask(_resume, plan, context) {
     let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} .`,
         message = `Context for the current task: ${context}.`;
 
+    currentDepth = 1;
     saveResumesHistory(_resume);
-    return await apiCall(resume, message, "", false)
+    return await apiCall(resume, message, "", false);
+
 }
 
 //
@@ -145,8 +155,6 @@ async function tryTillOk(func, arg1, arg2 = null) {
     }
 
     errorHandling(BAR);
-    return r;
-
 }
 
 //
@@ -215,13 +223,9 @@ async function processMessage(msg) {
     let _resume, _plan, _critical, context;
     let chatLevel = getChatLevel(maxDepth);
 
-    const hasMissing = c => c.some(step => step.length > 0);
-
     do {
 
-        let chatLevel = getChatLevel(maxDepth);
         context = buildContext(msg, currentDepth);
-
         _resume = await tryTillOk(() => resumeTask(context));
 
         if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
