@@ -1,17 +1,10 @@
 
 // For measurimg global exec time
 const t0 = developing ? performance.now() : false;
+let modelNameUsed = null;
 
-
-// For use only in developing (gpt test key will be retired from open ai API dashboard after developement is done)
-const testModelName = `gpt-5.2`;
-const gptTestKey = `${ENV.gptTestKey}`;// ENV obj is in a GIT ommited file so relax...
-
-// Getting auth data from storage logic if in production.
-const keyUsed = developing ? gptTestKey : getFromStorage(`key`);
-// Getting  model name
-const modelNameUsed = developing ? testModelName : getFromStorage(`modelName`);
-
+//Model name is not critical info so it can be decrypted here
+loadFromStorage(`model`).then((key) => modelNameUsed = key)
 
 //
 // Core functions
@@ -94,13 +87,14 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function apiCall(prompt, instructions = "Be a helpful asistant", _responseFormat = "", showThinking = true) {
 
     const input = [];
+    const _key = await loadFromStorage(`apiKey`);
 
     const response = await fetch(CONFIG.endPointUrl, {
 
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${keyUsed.trim()}`
+            "Authorization": `Bearer ${_key.trim()}`
         },
         temperature: 0.1,
         top_p: 1.0,

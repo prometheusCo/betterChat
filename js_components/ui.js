@@ -125,6 +125,20 @@ function renderHistoryResume() {
 }
 
 
+function cleanInput(id) {
+
+    log(`Cleanin' user data inside id ${id}`);
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const fields = el.querySelectorAll("input, textarea");
+
+    fields.forEach(field => {
+        field.value = "";
+    });
+}
+
+
 function appendToUI(content, role, animate = true) {
 
     if (!hero.classList.contains('hidden')) {
@@ -267,7 +281,12 @@ async function handleSend() {
  * 4. MODAL LOGIC
  */
 
-const toggleSettings = (show) => document.getElementById('settings-modal').classList.toggle('hidden', !show);
+const toggleSettings = (show) => {
+
+    !show ? cleanInput('settings-modal') : null;
+    document.getElementById('settings-modal').classList.toggle('hidden', !show);
+
+}
 const toggleInfo = (show) => document.getElementById('info-modal').classList.toggle('hidden', !show);
 const toggleHistory = (show) => document.getElementById('history-modal').classList.toggle('hidden', !show);
 const toggleDelete = (show) => document.getElementById('delete-modal').classList.toggle('hidden', !show);

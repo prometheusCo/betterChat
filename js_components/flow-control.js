@@ -93,7 +93,7 @@ async function planTask(resume) {
 async function completeTask(_resume, plan, context) {
 
     let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} `,
-        message = `Context for the current task: ${context}`;
+        message = `Context for the current task: ${context}. Deliver result in formated text.`;
 
     saveResumesHistory(_resume);
     return await apiCall(resume, message, "", false)

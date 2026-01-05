@@ -9,7 +9,12 @@ function setEvents() {
     });
 
     // Settings Listeners
-    document.getElementById('settings-btn').addEventListener('click', () => toggleSettings(true));
+    document.getElementById('settings-btn').addEventListener('click', () => {
+
+        renderSettings();
+        toggleSettings(true);
+    });
+
     document.getElementById('cancel-modal').addEventListener('click', () => toggleSettings(false));
     document.getElementById('history-modal').addEventListener('click', () => toggleHistory(false));
 
