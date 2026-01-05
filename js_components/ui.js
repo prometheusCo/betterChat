@@ -187,8 +187,7 @@ function appendToUI(content, role, animate = true) {
             text-center
             italic
             monologue
-            text-[var(--text-main)]
-            
+            text-[var(--text-main)]            
         `;
         message.id = `monologue-${document.querySelectorAll(".user-msg").length}`;
         message.textContent = content;
@@ -205,7 +204,7 @@ function appendToUI(content, role, animate = true) {
                     </svg>
                 </div>
             </div>
-            <div class="user_message message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
+            <div class="user_message  pre-style message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
         `;
     }
 
@@ -366,3 +365,13 @@ async function loadChatHistory() {
     });
 
 }
+
+function setLight_Dark_Mode() {
+
+    const useLightMode = localStorage.getItem(`ligthMode`) ?? "false";
+    const isLight = document.querySelectorAll('.light-mode').length > 0;
+
+    if (useLightMode === "true" && !isLight)
+        document.getElementById("theme-toggle").click();
+
+};

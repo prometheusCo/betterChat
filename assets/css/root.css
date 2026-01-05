@@ -351,6 +351,16 @@
      color: var(--text-main)!important;
 }
 
+
+ .pre-style { 
+    
+      font-family: monospace!important; 
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-x: auto;
+      max-width: 100%;
+} 
+
 /** CSS QUERIES**/
 
  @media (min-width: 1201px) {

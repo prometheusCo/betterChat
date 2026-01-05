@@ -4,9 +4,13 @@ function setEvents() {
     // Dark theme on/off toggle
     document.getElementById('theme-toggle').addEventListener('click', () => {
 
-        const isLight = document.documentElement.classList.toggle('light-mode');
-        document.getElementById('sun-icon').classList.toggle('hidden', !isLight);
-        document.getElementById('moon-icon').classList.toggle('hidden', isLight);
+        const mode = document.documentElement.classList.toggle('light-mode');
+        let isLightMode = document.querySelectorAll('.light-mode').length > 0;
+
+        document.getElementById('sun-icon').classList.toggle('hidden', !mode);
+        document.getElementById('moon-icon').classList.toggle('hidden', mode);
+
+        isLightMode ? localStorage.setItem("ligthMode", "true") : localStorage.setItem("ligthMode", "false")
 
     });
 

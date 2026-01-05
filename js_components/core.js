@@ -203,3 +203,38 @@ function setLearningMode() {
     learningButton.classList.add("learning-active");
 
 }
+
+
+function formatCodeAuto(code) {
+
+    if (typeof code !== "string") return code;
+
+    const trimmed = code.trim();
+
+    const options = {
+        indent_size: 2,
+        preserve_newlines: true,
+        max_preserve_newlines: 1,
+        end_with_newline: true
+    };
+
+    // HTML detection
+    if (
+        trimmed.startsWith("<") &&
+        (trimmed.includes("</") || trimmed.includes("/>"))
+    ) {
+        return html_beautify(code, options);
+    }
+
+    // CSS detection
+    if (
+        trimmed.includes("{") &&
+        trimmed.includes("}") &&
+        trimmed.match(/^[\s\S]*?\{[\s\S]*?:[\s\S]*?;[\s\S]*?\}/)
+    ) {
+        return css_beautify(code, options);
+    }
+
+    // Default → JavaScript
+    return js_beautify(code, options);
+}

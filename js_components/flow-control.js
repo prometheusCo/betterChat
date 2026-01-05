@@ -100,8 +100,8 @@ async function planTask(resume) {
 
 async function completeTask(_resume, plan, context) {
 
-    localStorage.getItem("learningMode") === "true" ?
-        createTags(_resume).then((tags) => related_tags = tags) : null;
+    /*localStorage.getItem("learningMode") === "true" ?
+        createTags(_resume).then((tags) => related_tags = tags) : null;*/
 
     let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} .`,
         message = `Context for the current task: ${context}.`;
@@ -232,6 +232,10 @@ async function processMessage(msg) {
 
             showSpinner();
             log("non complex task detected, early exit");
+
+            localStorage.getItem("learningMode") === "true" ?
+                createTags(_resume).then((tags) => related_tags = tags) : null;
+
             return await completeTask(_resume, _plan, context);
         }
 
