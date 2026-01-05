@@ -112,9 +112,14 @@ function renderFAQ() {
 
 function renderHistoryResume() {
 
-    const list = document.getElementById('resume-list');
-    if (!list) return;
-    list.innerHTML = chat_resume.map(item => `
+    loadFromStorage(`chat_resume`).then((_cr) => {
+
+        log(_cr)
+        const _chat_resume = JSON.parse(_cr) ?? chat_resume;
+        const list = document.getElementById('resume-list');
+
+        if (!list) return;
+        list.innerHTML = _chat_resume.map(item => `
                 <div class="history-item group block">
                     <div class="flex items-center space-x-3">
                         <div class="w-2 h-2 rounded-full bg-purple-500/50 group-hover:bg-purple-500 transition-colors"></div>
@@ -122,6 +127,9 @@ function renderHistoryResume() {
                     </div>
                 </div>
             `).join('');
+
+
+    })
 }
 
 

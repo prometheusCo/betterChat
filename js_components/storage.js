@@ -131,7 +131,7 @@ async function loadFromStorage(keyName) {
 function clearHistory() {
 
     localStorage.removeItem('chat_history');
-    localStorage.removeItem('goal_history');
+    localStorage.removeItem('chat_resume');
 }
 
 

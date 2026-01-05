@@ -178,6 +178,12 @@ function buildContext(baseMsg, depth) {
 //
 function saveResumesHistory(resume) {
 
+    if (chat_resume[0] === "No goal defined yet - Prompt something to start")
+        chat_resume.shift();
+
+    chat_resume.push(JSON.parse(resume).resume);
+    saveStorage(`chat_resume`, JSON.stringify(chat_resume));
+
 }
 
 

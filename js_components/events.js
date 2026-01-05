@@ -59,6 +59,7 @@ function setEvents() {
 
     // Click outside to close modals
     window.addEventListener('click', (e) => {
+
         if (e.target.classList.contains('modal-overlay')) {
             toggleSettings(false);
             toggleInfo(false);
@@ -66,6 +67,7 @@ function setEvents() {
     });
 
     input.addEventListener('input', function () {
+
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
         sendBtn.disabled = this.value.trim().length === 0;
@@ -83,5 +85,6 @@ function setEvents() {
 
 document.getElementById('history-button').onclick = () => {
     toggleHistory(true);
+    renderHistoryResume();
 };
 
