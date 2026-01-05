@@ -6,6 +6,7 @@ const chatArea = document.getElementById('chat-area');
 const workspace = document.getElementById('workspace-container');
 const body = document.getElementsByClassName('body')[0];
 const learningButton = document.getElementById('learning-button');
+const tagItems = document.querySelectorAll('.tag-item');
 
 let lastUserMsg = null;
 let thinking = null;

@@ -181,13 +181,13 @@ function appendToUI(content, role, animate = true) {
             max-w-[75%]
             rounded-2xl
             text-[15px]
-            text-green-200
             bg-green-900/30
             border border-green-500/30
             backdrop-blur
             text-center
             italic
             monologue
+            text-[var(--text-main)
             
         `;
         message.id = `monologue-${document.querySelectorAll(".user-msg").length}]`;
@@ -259,6 +259,17 @@ function showSpinner(show = true, whereTo = body) {
 
 //
 //
+function send(text) {
+
+    input.value = `Tell me more about this: ${text}`;
+    sendBtn.disabled = false;
+    sendBtn.click();
+
+}
+
+
+//
+//
 async function learningTagsHandle() {
 
     tags = JSON.parse(related_tags).related_dive_in_topics;
@@ -277,9 +288,11 @@ async function learningTagsHandle() {
     tags.forEach(tag => {
 
         const tagItem = document.createElement("span");
-        tagItem.className = "tag-item";
+        tagItem.className = "tag-item bg-green-900/30 border border-green-500/30";
         tagItem.textContent = tag;
         tagCloud.appendChild(tagItem);
+
+        tagItem.onclick = () => send(tag);
     });
     lastUserMsg.appendChild(tagCloud);
 }
@@ -316,6 +329,7 @@ async function handleSend() {
         }
         saveMessage(response, 'assistant');
         learningTagsHandle();
+        scrollChatEnd();
 
     }, 600);
 }

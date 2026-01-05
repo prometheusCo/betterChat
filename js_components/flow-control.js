@@ -3,7 +3,7 @@
 async function resumeTask(msg) {
 
     let resume = `Resume task declared in user message in ${getWordsForResume(msg)} words max... Evaluate complexity
-    of given task, being 10 a higly intelectual task and 1 a simple info query. `,
+    of given task, being 10 a higly intelectual task and 1 a simple info query and 2 a query for a definition `,
         message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
 
     return await apiCall(resume, message, "resume_task")
@@ -91,6 +91,9 @@ async function planTask(resume) {
 
 
 async function completeTask(_resume, plan, context) {
+
+    localStorage.getItem("learningMode") === "true" ?
+        createTags(_resume).then((tags) => related_tags = tags) : null;
 
     let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} .`,
         message = `Context for the current task: ${context}.`;
@@ -223,9 +226,8 @@ async function processMessage(msg) {
 
         if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
 
+            showSpinner();
             log("non complex task detected, early exit");
-
-            createTags(_resume).then((tags) => related_tags = tags);
             return await completeTask(_resume, _plan, context);
         }
 

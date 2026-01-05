@@ -304,33 +304,35 @@
 
 
 /* Tag Cloud Container */
-.tag-cloud {
+.tag-cloud
+ {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 16px;
     padding-top: 12px;
-    /* Visual separator from the message text */
     border-top: 1px dashed var(--border-color);
+    padding: 35px 0 25px 0 !important;
+    margin-top: 35px;
 }
 
-/* Individual Tag Item */
 .tag-item {
-    /* Uses dynamic variables based on theme */
+    
     background-color: var(--tag-bg);
     color: var(--tag-text);
-    
     padding: 4px 12px;
     border-radius: 99px;
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    
-    /* Prevents text selection when clicking rapidly */
     user-select: none;
     display: inline-flex;
     align-items: center;
+    background: #b8cbc0;
+    padding: 10px 15px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 /* Hover effects */
@@ -343,6 +345,10 @@
 .tag-item:active {
     transform: translateY(0);
     filter: brightness(0.9);
+}
+
+.ligthText{
+     color: var(--text-main)!important;
 }
 
 /** CSS QUERIES**/

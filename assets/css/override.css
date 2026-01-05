@@ -14,3 +14,9 @@
 #learning-button{
     padding: 7px!important;
 }
+
+.user_message.message-content{
+
+        text-align: justify!important;
+        line-height: 1.5rem!important;
+}

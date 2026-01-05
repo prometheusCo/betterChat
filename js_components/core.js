@@ -14,7 +14,16 @@ loadFromStorage(`model`).then((key) => modelNameUsed = key)
 const updateThinking = () => thinking = document.getElementById(`monologue-${document.querySelectorAll(".user-msg").length}]`);
 const updateLastUserMsg = () => lastUserMsg = document.getElementsByClassName("user_message")[document.getElementsByClassName("user_message").length - 1]
 
-const scrollChatEnd = () => chatArea.scrollTo(0, chatArea.scrollHeight);
+const scrollChatEnd = () => {
+
+    let cth = 0;
+    try {
+        cth = document.querySelectorAll(`.tag-cloud`)[document.querySelectorAll(`.tag-cloud`).length - 1].scrollHeight;
+    } catch (error) { }
+
+    chatArea.scrollTo(0, chatArea.scrollHeight + (localStorage.getItem('learningMode') === "true" ? cth : 0))
+};
+
 const log = (msg) => developing ? console.log(msg) : null;
 const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
 
@@ -113,6 +122,9 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
 
     updateThinking();
     updateLastUserMsg();
+
+    const isLight = document.querySelectorAll('.light-mode').length > 0;
+    isLight ? thinking.classList.add('ligthText') : thinking.classList.remove('ligthText');
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");

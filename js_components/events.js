@@ -3,9 +3,11 @@ function setEvents() {
 
     // Dark theme on/off toggle
     document.getElementById('theme-toggle').addEventListener('click', () => {
+
         const isLight = document.documentElement.classList.toggle('light-mode');
         document.getElementById('sun-icon').classList.toggle('hidden', !isLight);
         document.getElementById('moon-icon').classList.toggle('hidden', isLight);
+
     });
 
     // Settings Listeners
@@ -101,3 +103,6 @@ function toggleLearningMode() {
 
 
 document.getElementById("learning-button").addEventListener("click", toggleLearningMode);
+
+
+
