@@ -4,7 +4,7 @@
 
 ## Description
 
-This project is an **advanced frontend** that interacts with the OpenAI API, implementing a **Chain of Thought** reasoning scheme at the code level. The frontend is designed to force any OpenAI model to process tasks following a structured and optimized flow that includes:
+This project is an **advanced frontend** that interacts with the OpenAI API, implementing a **Chain of Thought** reasoning scheme at  code level. The frontend is designed to force any OpenAI model to process tasks following a structured and optimized flow that includes:
 
 - **Task summarization**  
 - **Complexity determination**  
