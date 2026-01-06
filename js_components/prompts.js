@@ -43,11 +43,14 @@ const textFormats = {
             type: "object",
             properties: {
                 resume: { type: "string" },
-                complexity_level_from_1_to_10: { type: "integer" }
+                complexity_level_from_1_to_10: { type: "integer" },
+                iso_code_user_message_lang: { type: "string" }
+
             },
             required: [
                 "resume",
-                "complexity_level_from_1_to_10"
+                "complexity_level_from_1_to_10",
+                "iso_code_user_message_lang",
             ],
             additionalProperties: false
         }

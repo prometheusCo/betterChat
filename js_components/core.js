@@ -3,6 +3,8 @@
 const t0 = developing ? performance.now() : false;
 let modelNameUsed = null;
 let related_tags;
+let lang = `en`;
+
 
 //Model name is not critical info so it can be decrypted here
 loadFromStorage(`model`).then((key) => modelNameUsed = key)

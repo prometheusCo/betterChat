@@ -10,6 +10,7 @@ async function resumeTask(msg) {
          ** Asking for information about someone would be scaled lower than 5 **
 
          ** Any request that involves creativity would be rate from 5 to 10 **
+     3- Deliver original message lang iso code example: [es,en...] 
          `
 
     message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
@@ -188,7 +189,7 @@ function getLastInteractions(count = 5) {
 function buildContext(baseMsg, depth, GLOBAL_CONTEXT) {
 
     baseMsg += ` => Optional context that may be useful: ${GLOBAL_CONTEXT}... 
-    Never reference to this context in your answer, just use it if applied`;
+    Never reference to this context in your answer, just use it if applied, dont talk about`;
 
     if (depth === 0)
         return baseMsg;
@@ -234,6 +235,8 @@ async function processMessage(msg) {
         context = buildContext(msg, currentDepth, GLOBAL_CONTEXT);
         _resume = await tryTillOk(() => resumeTask(context));
 
+        lang = JSON.parse(_resume).iso_code_user_message_lang;
+
         if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
 
             showSpinner();
@@ -245,7 +248,7 @@ async function processMessage(msg) {
             return await completeTask(_resume, _plan, context);
         }
 
-        _plan = await tryTillOk(() => planTask(_resume));
+        _plan = await tryTillOk(() => planTask(JSON.parse(_resume).resume));
         _critical = await gatherCriticalRequirements(_plan, context)
 
         currentDepth = currentDepth + step;
