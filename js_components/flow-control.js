@@ -187,7 +187,8 @@ function getLastInteractions(count = 5) {
 //
 function buildContext(baseMsg, depth, GLOBAL_CONTEXT) {
 
-    baseMsg += ` => Optional context that may be useful: ${GLOBAL_CONTEXT}`;
+    baseMsg += ` => Optional context that may be useful: ${GLOBAL_CONTEXT}... 
+    Never reference to this context in your answer, just use it if applied`;
 
     if (depth === 0)
         return baseMsg;

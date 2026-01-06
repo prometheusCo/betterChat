@@ -6,22 +6,34 @@
 //
 // Faq info
 const faqData = [
-
     {
-        title: "What is BetterChat?",
-        content: "BetterChat is a specialized frontend for GPT Large Language Models,  that enforces structured reasoning. It hardcodes Chain of Thought execution at  code level, ensuring the model follows instructions strictly and produces higher-quality reasoning than standard chat interfaces."
+        title: "What is this project?",
+        content:
+            "It’s a minimalistic web frontend to interact with the OpenAI API. Unlike typical chat UIs that rely on one long prompt, this app orchestrates the workflow in JavaScript, enforcing a stable, auditable pipeline for more consistent & smart outputs."
     },
     {
-        title: "How does enforced Chain of Thought work?",
-        content: "BetterChat injects and controls reasoning steps directly in the prompt and execution flow. This prevents the model from skipping instructions and reduces hallucination risks. Resulting in more consistent, logical, and reliable outputs compared to vanilla LLM usage."
+        title: "What are the main benefits vs a standard chat UI?",
+        content:
+            "The code-orchestrated flow reduces variability between answers, enables validations/heuristics before continuing. This generally yields more consistent and smart behavior than a monolithic prompt approach."
+    },
+    {
+        title: "What is Learning Mode?",
+        content:
+            "After each response, (if option enabled )the UI shows a tag cloud under the message with related concepts. You can use these tags to explore associated topics and deepen understanding. "
+    },
+    {
+        title: "Which AI providers/models are supported?",
+        content:
+            "The frontend is designed to work with the OpenAI API. Ollama API will be added in a future."
+    },
+    {
+        title: "Is there any installation required?",
+        content:
+            "No. It’s a web app. Native Electron and Cordova builds will be added in a future for Windows/Android offline use. "
     },
     {
         title: "Is my data secure?",
-        content: "Yes. All sensitive data stored on your device—including API keys, endpoints, preferences, and memory—is encrypted locally. This information never leaves your device except when sent directly to your selected AI provider during a request. No intermediary servers are involved."
-    },
-    {
-        title: "Can I use different models?",
-        content: "BetterChat currently supports the  Open AI API. Support for additional APIs will be added in the future. Therefore all Open AI models are available."
+        content: "Yes. All sensitive data is stored on your device—including API keys, endpoints, preferences, and memory—is encrypted locally. This information never leaves your device except when sent directly to your selected AI provider during a request. No intermediary servers are involved."
     }
 
 ];
@@ -271,11 +283,12 @@ function send(text) {
 //
 async function learningTagsHandle() {
 
+    tags = null;
+    try { tags = JSON.parse(related_tags).related_dive_in_topics; } catch (e) { }
 
     const learningMode = localStorage.getItem("learningMode") ?? "false";
     if (learningMode === "false" || !Array.isArray(tags) || tags.length === 0) return;
 
-    tags = JSON.parse(related_tags).related_dive_in_topics;
     updateLastUserMsg();
 
     log(`tags are \n`);
