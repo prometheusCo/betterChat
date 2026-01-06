@@ -1,65 +1,78 @@
-# Specialized Frontend for OpenAI API with Chain of Thought and Learning Mode
-
----
-
-## Description
-
-This project is an **advanced frontend** that interacts with the OpenAI API, implementing a **Chain of Thought** reasoning scheme at  code level. The frontend is designed to force any OpenAI model to process tasks following a structured and optimized flow that includes:
-
-- **Task summarization**  
-- **Complexity determination**  
-- **Division into steps if complex**  
-- **Verification of necessary information**  
-- **Step-by-step execution**  
-
-In addition, it integrates an **interactive learning mode** that, when a query is made, displays a **tag cloud** related to the message below it to delve into linked topics, facilitating continuous user learning.
-
-To avoid common issues such as **overplanning** and **excessive context**, the system incorporates various **intelligent heuristics** that optimize the interaction with the API and improve overall performance.
-
----
-
-## Main Features
-
-- Explicit enforcement of chain of thought reasoning in OpenAI models.  
-- Automatic analysis of task complexity.  
-- Intelligent division of complex tasks into manageable steps.  
-- Verification of completeness and relevance of information prior to execution.  
-- Ordered and controlled execution of each step at the code level.  
-- Learning mode with a tag cloud for thematic navigation.  
-- Heuristics to minimize overplanning and avoid redundant context.
-
-
-#
-#
-#
-#
-
-# Frontend especializado para API OpenAI con Chain of Thought y Modo de Aprendizaje
+# Frontend especializado para API OpenAI con **Chain of Thought controlado por código** y **Modo de Aprendizaje**
 
 ---
 
 ## Descripción
 
-Este proyecto es un **frontend avanzado** que interactúa con la API de OpenAI, implementando un esquema de razonamiento **Chain of Thought** a nivel de código. El frontend está diseñado para forzar a cualquier modelo de OpenAI a procesar tareas siguiendo un flujo estructurado y optimizado que incluye:
+Este proyecto es un **frontend minimalista** para interactuar con la API de OpenAI, diseñado para **controlar el flujo de razonamiento (Chain of Thought) desde el código**, en lugar de delegar toda la “cadena” a un único prompt largo.
 
-- **Resumen de la tarea**  
-- **Determinación de la complejidad**  
-- **División en pasos si es complejo**  
-- **Verificación de información necesaria**  
-- **Ejecución paso a paso**  
+En vez de pedirle al modelo que planifique y ejecute todo de una sola vez, la aplicación **orquesta el proceso paso a paso en JavaScript**, imponiendo un pipeline estable y auditable. Esto permite:
 
-Además, integra un **modo aprendizaje interactivo** que, al realizar una consulta, muestra una **nube de etiquetas** relacionadas debajo del mensaje para profundizar en temas vinculados, facilitando el aprendizaje continuo del usuario.
+- **Reducir variabilidad** entre respuestas (menos “improvisación” del modelo).
+- **Evitar prompts gigantes** y el exceso de contexto innecesario.
+- **Aplicar validaciones y heurísticas** antes de avanzar al siguiente paso.
+- **Mantener control** sobre qué se pregunta, cuándo y con qué formato.
 
-Para evitar problemas comunes como la **sobreplanificación** y el **exceso de contexto**, el sistema incorpora varias **heurísticas inteligentes** que optimizan la interacción con la API y mejoran el rendimiento general.
+El flujo de trabajo se implementa explícitamente a nivel de código e incluye:
+
+- **Resumen de la tarea**
+- **Determinación de complejidad**
+- **Descomposición en pasos (si aplica)**
+- **Verificación de información faltante o requisitos**
+- **Ejecución secuencial y controlada de cada paso**
+
+Además, integra un **Modo de Aprendizaje**: tras cada consulta, el frontend muestra debajo del mensaje una **nube de etiquetas** relacionadas para explorar conceptos asociados y profundizar de forma guiada, fomentando el aprendizaje continuo sin recargar la interfaz.
+
+Para evitar problemas comunes como la **sobreplanificación** o el **contexto redundante**, el sistema incorpora **heurísticas** que deciden cuándo dividir tareas, cuándo pedir aclaraciones y cuánto contexto incluir en cada llamada.
 
 ---
 
 ## Características principales
 
-- Forzado explícito de razonamiento chain of thought en modelos OpenAI.
-- Análisis automático de la complejidad de las tareas.
-- División inteligente de tareas complejas en pasos manejables.
-- Comprobación de completitud y relevancia de la información antes de la ejecución.
-- Ejecución ordenada y controlada de cada paso a nivel de código.
-- Modo aprendizaje con nube de etiquetas para navegación temática.
-- Heurísticas para minimizar sobreplanificación y evitar contexto redundante.
+- **Orquestación del Chain of Thought por código (JavaScript)**: el programa define el pipeline, no un prompt monolítico.
+- **Interfaz clara y minimalista** centrada en la tarea y el resultado.
+- **Análisis automático de complejidad** para decidir si conviene descomponer.
+- **División inteligente en pasos** con control de entrada/salida por etapa.
+- **Chequeos de completitud y relevancia** antes de ejecutar o continuar.
+- **Ejecución ordenada y verificable**: cada paso queda explícito y trazable.
+- **Modo aprendizaje con nube de etiquetas** para navegación temática.
+- **Heurísticas anti-sobreplanificación** y anti-exceso de contexto para optimizar rendimiento y consistencia.
+
+#
+#
+#
+#
+#
+#
+
+## Specialized Frontend for the OpenAI API with Code-Level Chain-of-Thought Control and Learning Mode
+
+---
+
+## Description
+
+This project is an **minimal clean frontend** that interacts with the OpenAI API, implementing **Chain-of-Thought control at code level**. This approach is preferable to relying on the model to execute an entire reasoning pipeline inside a single prompt, because the application can **enforce a structured, optimized flow** deterministically.
+
+The frontend is designed to ensure that any OpenAI model processes tasks through a clear, minimalistic interface and a controlled sequence that includes:
+
+- **Task summary**  
+- **Complexity assessment**  
+- **Step breakdown when the task is complex**  
+- **Validation of required information**  
+- **Step-by-step execution**  
+
+In addition, it includes an **interactive learning mode** that, after each query, displays a **tag cloud** beneath the message to explore related topics and support continuous learning.
+
+To avoid common issues such as **over-planning** and **excess context**, the system incorporates **smart heuristics** that optimize API interaction and improve overall performance.
+
+---
+
+## Key Features
+
+- Explicit, code-enforced Chain-of-Thought reasoning flow for OpenAI models (rather than prompt-only orchestration).
+- Automatic task complexity analysis.
+- Intelligent decomposition of complex tasks into manageable steps.
+- Completeness and relevance checks before execution.
+- Ordered, controlled step execution at the application level.
+- Learning mode with a tag cloud for topic navigation.
+- Heuristics to minimize over-planning and prevent redundant context.

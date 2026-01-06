@@ -29,8 +29,10 @@ const time = () => !!t0 ? log(`exec time: ${performance.now() - t0} ms`) : null;
 
 
 //
-function errorHandling(errorCode, error = null) {
+function errorHandling(errorCode = null, error = null) {
 
+    log(errorCode);
+    showSpinner(false);
     try {
 
         let e = new errorCode();

@@ -271,11 +271,11 @@ function send(text) {
 //
 async function learningTagsHandle() {
 
-    tags = JSON.parse(related_tags).related_dive_in_topics;
 
     const learningMode = localStorage.getItem("learningMode") ?? "false";
     if (learningMode === "false" || !Array.isArray(tags) || tags.length === 0) return;
 
+    tags = JSON.parse(related_tags).related_dive_in_topics;
     updateLastUserMsg();
 
     log(`tags are \n`);

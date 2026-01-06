@@ -1,6 +1,5 @@
 const textFormats = {
 
-
     critical_info: {
 
         name: "critical_info",
@@ -94,15 +93,6 @@ const textFormats = {
             additionalProperties: false
         }
     },
-
-    out_fields: {
-
-        resume_task: "steps",
-        critical_info: "missing_critical",
-        related_topics: "cloud_tags"
-
-    }
-
 
 
 };

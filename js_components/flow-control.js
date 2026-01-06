@@ -185,9 +185,12 @@ function getLastInteractions(count = 5) {
 //
 // Context expansion helper
 //
-function buildContext(baseMsg, depth) {
+function buildContext(baseMsg, depth, GLOBAL_CONTEXT) {
 
-    if (depth === 0) return baseMsg;
+    baseMsg += ` => Optional context that may be useful: ${GLOBAL_CONTEXT}`;
+
+    if (depth === 0)
+        return baseMsg;
 
     const history = getLastInteractions(depth);
     return `${history}\n\nCURRENT MESSAGE:\n${baseMsg}`;
@@ -223,10 +226,11 @@ async function processMessage(msg) {
 
     let _resume, _plan, _critical, context;
     let chatLevel = getChatLevel(maxDepth);
+    let GLOBAL_CONTEXT = await loadFromStorage(`ai_memory`);
 
     do {
 
-        context = buildContext(msg, currentDepth);
+        context = buildContext(msg, currentDepth, GLOBAL_CONTEXT);
         _resume = await tryTillOk(() => resumeTask(context));
 
         if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
@@ -244,9 +248,6 @@ async function processMessage(msg) {
         _critical = await gatherCriticalRequirements(_plan, context)
 
         currentDepth = currentDepth + step;
-
-        log(`current deep ${currentDepth}`)
-        log(`built context is ${context}`);
 
     } while (currentDepth <= maxDepth && hasMissing(_critical) && ((currentDepth / step) < chatLevel));
 
