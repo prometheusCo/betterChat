@@ -2,7 +2,7 @@
 
 ---
 
-[Proyect Demo](https://japgcv.es/portfolio/betterChat)
+[Demo usable del proyecto](https://japgcv.es/portfolio/betterChat)
 
 
 ## Descripción
@@ -48,6 +48,8 @@ Para evitar problemas comunes como la **sobreplanificación** o el **contexto re
 #
 
 ## Specialized Frontend for the OpenAI API with Code-Level Chain-of-Thought Control and Learning Mode
+
+[Working demo](https://japgcv.es/portfolio/betterChat)
 
 ---
 
