@@ -21,11 +21,11 @@ const CONFIG = {
     stream: true,
 
     contextStep: 1,
-    maxContextDepth: 5,
+    maxContextDepth: 7,
 
     complexity_level_threshold: 5.5,
 
     max_suggested_tags: 5,
 
-    base_deep: 1,
+    base_deep: 2,
 };
