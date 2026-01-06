@@ -10,7 +10,7 @@ async function resumeTask(msg) {
          ** Asking for information about someone would be scaled lower than 5 **
 
          ** Any request that involves creativity and coding would be rate from 5 to 10 **
-     3- Deliver original message lang iso code example: [es,en...] 
+    3- Deliver original message lang iso code example: [es, en...]
          `
 
     message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
