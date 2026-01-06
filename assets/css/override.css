@@ -21,9 +21,9 @@
         line-height: 1.5rem!important;
 }
 
-.monologue 
-{
-     padding-bottom: 25px !important;
-     padding-top: 30px!important;
-     display: ruby!important;
+.monologue {
+    
+    padding-bottom: 0!important;
+    padding-top: 30px !important;
+    display: ruby-text;
 }
