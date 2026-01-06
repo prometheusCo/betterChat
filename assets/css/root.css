@@ -296,7 +296,7 @@
 
 
 .learning-active {
-    background-color: rgb(110 109 247) !important;
+        background-color: rgb(192 132 252 / var(--tw-text-opacity, 1));
         color: white!important;
 
 }

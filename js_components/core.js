@@ -3,7 +3,7 @@
 const t0 = developing ? performance.now() : false;
 let modelNameUsed = null;
 let related_tags;
-let lang = `en`;
+let lang = null;
 
 
 //Model name is not critical info so it can be decrypted here

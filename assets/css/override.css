@@ -24,8 +24,12 @@
 .monologue {
     
     padding-bottom: 0!important;
-    padding-top: 30px !important;
+    padding-top: 45px !important;
     display: ruby-text!important;
 }
 
 
+#save-settings
+{
+    background: rgb(192 132 252)!important;
+}

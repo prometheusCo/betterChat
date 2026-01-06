@@ -9,7 +9,7 @@ async function resumeTask(msg) {
          ** Asking for information about something would be scaled lower than 5 **
          ** Asking for information about someone would be scaled lower than 5 **
 
-         ** Any request that involves creativity would be rate from 5 to 10 **
+         ** Any request that involves creativity and coding would be rate from 5 to 10 **
      3- Deliver original message lang iso code example: [es,en...] 
          `
 
@@ -105,8 +105,8 @@ async function completeTask(_resume, plan, context) {
     /*localStorage.getItem("learningMode") === "true" ?
         createTags(_resume).then((tags) => related_tags = tags) : null;*/
 
-    let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} .`,
-        message = `Context for the current task: ${context}.`;
+    let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} . Output language {{ ${lang} }}`,
+        message = `Context for the current task: ${context}. Finally: be breve and concise `;
 
     currentDepth = CONFIG.base_deep;
     saveResumesHistory(_resume);
@@ -130,7 +130,7 @@ async function askForMissingDetail(missing_info) {
 async function createTags(_resume) {
 
     let tags = `Given this topic: {{ ${_resume} }}, suggest 3 to ${CONFIG.max_suggested_tags} dive in related topics,
-    so user can learn more about it.`,
+    so user can learn more about it. Use output language -> ${lang}`,
         message = ``;
 
     return await apiCall(tags, message, "cloud_tags", false);
@@ -235,7 +235,7 @@ async function processMessage(msg) {
         context = buildContext(msg, currentDepth, GLOBAL_CONTEXT);
         _resume = await tryTillOk(() => resumeTask(context));
 
-        lang = JSON.parse(_resume).iso_code_user_message_lang;
+        lang = lang === null ? JSON.parse(_resume).iso_code_user_message_lang : lang;
 
         if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
 
