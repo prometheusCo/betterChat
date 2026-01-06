@@ -2,6 +2,9 @@
 
 ---
 
+[Proyect Demo](mailto:someone@example.com)
+
+
 ## Descripción
 
 Este proyecto es un **frontend minimalista** para interactuar con la API de OpenAI, diseñado para **controlar el flujo de razonamiento (Chain of Thought) desde el código**, en lugar de delegar toda la “cadena” a un único prompt largo.
@@ -9,7 +12,6 @@ Este proyecto es un **frontend minimalista** para interactuar con la API de Open
 En vez de pedirle al modelo que planifique y ejecute todo de una sola vez, la aplicación **orquesta el proceso paso a paso en JavaScript**, imponiendo un pipeline estable y auditable. Esto permite:
 
 - **Reducir variabilidad** entre respuestas (menos “improvisación” del modelo).
-- **Evitar prompts gigantes** y el exceso de contexto innecesario.
 - **Aplicar validaciones y heurísticas** antes de avanzar al siguiente paso.
 - **Mantener control** sobre qué se pregunta, cuándo y con qué formato.
 
