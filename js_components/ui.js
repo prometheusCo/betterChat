@@ -27,11 +27,6 @@ const faqData = [
             "The frontend is designed to work with the OpenAI API. Ollama API will be added in a future."
     },
     {
-        title: "Is there any installation required?",
-        content:
-            "No. It’s a web app. Native Electron and Cordova builds will be added in a future for Windows/Android offline use. "
-    },
-    {
         title: "Is my data secure?",
         content: "Yes. All sensitive data is stored on your device—including API keys, endpoints, preferences, and memory—is encrypted locally. This information never leaves your device except when sent directly to your selected AI provider during a request. No intermediary servers are involved."
     }
@@ -47,9 +42,21 @@ const settingsSchema = [
 ];
 
 
-const chat_resume = [
-    "No goal defined yet - Prompt something to start"
+let chat_resume = [
+    ["No goal defined yet - Prompt something to start", [0, 0]]
 ];
+
+//
+// Helpers
+//
+
+function goTo(index = 0) {
+
+    const element = document.querySelectorAll(".user-msg")[index];
+    if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
 
 //
 // 
@@ -126,22 +133,26 @@ function renderHistoryResume() {
 
     loadFromStorage(`chat_resume`).then((_cr) => {
 
-        log(_cr)
-        const _chat_resume = JSON.parse(_cr) ?? chat_resume;
-        const list = document.getElementById('resume-list');
+        chat_resume = JSON.parse(_cr) ?? chat_resume;
 
-        if (!list) return;
-        list.innerHTML = _chat_resume.map(item => `
-                <div class="history-item group block">
+        try {
+
+            const _chat_resume = JSON.parse(_cr) ?? chat_resume;
+            const list = document.getElementById('resume-list');
+
+            if (!list) return;
+            list.innerHTML = _chat_resume.map(item => `
+                <div class="history-item group block" onclick="goTo(${item[1][0]})">
                     <div class="flex items-center space-x-3">
                         <div class="w-2 h-2 rounded-full bg-purple-500/50 group-hover:bg-purple-500 transition-colors"></div>
-                        <div class="text-sm font-medium text-[var(--text-main)] line-clamp-1">${item}</div>
+                        <div class="text-sm font-medium text-[var(--text-main)] line-clamp-1">${item[0]}</div>
                     </div>
                 </div>
             `).join('');
 
-
+        } catch (e) { }
     })
+
 }
 
 
@@ -246,14 +257,13 @@ function showSpinner(show = true, whereTo = body) {
     if (!show) {
 
         setTimeout(() => {
-            const loader = document.getElementsByClassName("loader")[0];
+
+            try { chatArea.style.filter = "blur(0px)"; } catch (e) { }
+            try { document.querySelectorAll(".monologue").forEach((x) => x.style.filter = "blur(0px)") } catch (e) { }
 
             try {
-                chatArea.style.filter = "blur(0px)";
-                thinking.style.filter = "blur(0px)";
+                document.querySelectorAll(".loader").forEach((x) => x.remove());
             } catch (e) { }
-
-            try { loader.remove(); } catch (e) { }
 
         }, 700);
         return;
@@ -388,3 +398,8 @@ function setLight_Dark_Mode() {
         document.getElementById("theme-toggle").click();
 
 };
+
+
+function getLastUserMsgIndex() {
+    return document.querySelectorAll(".user-msg").length ?? 1;
+}

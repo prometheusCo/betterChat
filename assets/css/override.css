@@ -33,3 +33,15 @@
 {
     background: rgb(192 132 252)!important;
 }
+
+.history-item {
+      padding: 10px!important;
+}
+
+#resume-list{
+        max-height: 100vh!important;
+}
+
+#history-modal>div{
+        max-height: 65vh!important;
+}

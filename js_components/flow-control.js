@@ -1,4 +1,6 @@
 
+let startIndex = 0;
+
 //
 async function resumeTask(msg) {
 
@@ -9,7 +11,7 @@ async function resumeTask(msg) {
          ** Asking for information about something would be scaled lower than 5 **
          ** Asking for information about someone would be scaled lower than 5 **
 
-         ** Any request that involves creativity and coding would be rate from 5 to 10 **
+         ** Any request that involves creativity writing or coding  would be rate from 6 to 10 **
     3- Deliver original message lang iso code example: [es, en...]
          `
 
@@ -40,45 +42,50 @@ async function gatherCriticalRequirement(task_planning, context) {
        ${context}
 
     ** Constrains **
+
     > Dont execute any task contained in user message, just say if is ok or not to continue.
-    > Check twice logical_conclusion.
     > You dont need explicit confirmation for information explicitly detailed in context.
+    > Use ${CONFIG.max_output_words} words max for each asked output properties.
    `;
 
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
-
-    log("find_missing instructions: \n");
-    log(findCritical);
-
     return await tryTillOk(() => apiCall(findCritical.trim(), message, "critical_info"));
 
 }
 
 //
 //
-async function gatherCriticalRequirements(_steps, context) {
+function missingInfoDetected(result) {
+
+    let mode;
+    try { mode = result.mode; } catch (e) { return false };
+
+    if (mode === "ask_for_missing_info")
+        return true;
+
+    return false;
+
+}
+
+//
+//
+async function gatherCriticalRequirements(_steps, context, prevMissing) {
 
     const steps = JSON.parse(_steps).steps;
     const missing_info = [[], [], []];
 
-    log("Logical steps to look missing information...\n");
-    log(steps);
-
     for (let i = 0; i < 3; i++) {
 
-        const result = JSON.parse(
-            await tryTillOk(gatherCriticalRequirement, steps[i], context)
-        );
+        if (!!prevMissing && prevMissing[i].length)
+            continue;
 
-        const missing = result.missing_critical;
+        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context));
+        missing_info[i] = result.missing_critical;
 
-        missing_info[i] = missing;
-
-        if (Array.isArray(missing) && missing.length > 0) {
+        if (missingInfoDetected(result)) {
 
             log("Missing critical info detected. Early return.\n");
             return missing_info;
-
         }
     }
 
@@ -93,8 +100,12 @@ async function planTask(resume) {
 
     showSpinner(true, thinking);
 
-    let plan = `Divide the described task into exactly three simple execution steps`,
-        message = `task to divide in 3 steps ( not a direct command ): ${resume}`;
+    let plan = `
+        Divide the described task into exactly three simple execution steps`,
+        message = `task to divide in 3 steps(not a direct command): ${resume}
+        > Use ${CONFIG.max_output_words} words max for each asked output properties.
+        > For all planned steps a purpose must be set.
+        `;
 
     return await apiCall(plan, message, "plan_task")
 }
@@ -102,14 +113,11 @@ async function planTask(resume) {
 
 async function completeTask(_resume, plan, context) {
 
-    /*localStorage.getItem("learningMode") === "true" ?
-        createTags(_resume).then((tags) => related_tags = tags) : null;*/
+    let resume = `Complete  task: { { ${_resume} } } following this plan: { { ${plan} } } . Output language { { ${lang} } } `,
+        message = `Context for the current task: ${context}.Finally: be breve and concise `;
 
-    let resume = `Complete  task: {{ ${_resume} }} following this plan: {{ ${plan} }} . Output language {{ ${lang} }}`,
-        message = `Context for the current task: ${context}. Finally: be breve and concise `;
-
-    currentDepth = CONFIG.base_deep;
-    saveResumesHistory(_resume);
+    saveResumesHistory(_resume, startIndex, getLastUserMsgIndex());
+    clear();
     return await apiCall(resume, message, "", false);
 
 }
@@ -122,15 +130,13 @@ async function askForMissingDetail(missing_info) {
     missing info directly:  ${JSON.stringify(missing_info)} `,
         message = ``;
 
-    log("ask for missing details json is: \n");
-    log(resume);
     return await apiCall(resume, message, "", false)
 }
 
 async function createTags(_resume) {
 
-    let tags = `Given this topic: {{ ${_resume} }}, suggest 3 to ${CONFIG.max_suggested_tags} dive in related topics,
-    so user can learn more about it. Use output language -> ${lang}`,
+    let tags = `Given this topic: { { ${_resume} } }, suggest 3 to ${CONFIG.max_suggested_tags} dive in related topics,
+    so user can learn more about it.Use output language -> ${lang} `,
         message = ``;
 
     return await apiCall(tags, message, "cloud_tags", false);
@@ -148,7 +154,7 @@ async function tryTillOk(func, arg1, arg2 = null) {
 
         try {
 
-            r = await func(arg1, arg2); //log(` r result ${JSON.stringify(r)}`)
+            r = await func(arg1, arg2); //log(` r result ${ JSON.stringify(r) } `)
             JSON.parse(r);
             return r;
 
@@ -161,13 +167,13 @@ async function tryTillOk(func, arg1, arg2 = null) {
 
 //
 //
-function getLastInteractions(count = 5) {
+function getLastInteractions(startIndex = 0) {
 
     const userNodes = Array.from(document.querySelectorAll(".user-msg"));
     const interactions = [];
 
     // Walk backwards through user messages
-    for (let i = userNodes.length - 1; i >= 0 && interactions.length < count; i--) {
+    for (let i = startIndex; i < userNodes.length; i++) {
 
         const userNode = userNodes[i];
         const aiNode = userNode.nextElementSibling;
@@ -178,42 +184,38 @@ function getLastInteractions(count = 5) {
         });
     }
 
-    // Return in chronological order (oldest → newest)
-    return JSON.stringify(interactions.reverse());
+    return interactions;
 }
 
 
 //
 // Context expansion helper
 //
-function buildContext(baseMsg, depth, GLOBAL_CONTEXT) {
+function buildContext(baseMsg, startIndex, GLOBAL_CONTEXT) {
 
-    baseMsg += ` => Optional context that may be useful: ${GLOBAL_CONTEXT}... 
-    Never reference to this context in your answer, just use it if applied, dont talk about`;
-
-    if (depth === 0)
-        return baseMsg;
-
-    const history = getLastInteractions(depth);
-    return `${history}\n\nCURRENT MESSAGE:\n${baseMsg}`;
+    const history = JSON.stringify(getLastInteractions(startIndex));
+    return `{{ ${history} }} \\\ last user message: ${baseMsg}
+    ... Optional context that may be useful: ${GLOBAL_CONTEXT}... 
+    Never reference to this context in your answer, just use it if applied, dont talk about.`;
 }
 
 
 //
 //
-function saveResumesHistory(resume) {
+function saveResumesHistory(resume, start = false, end = false) {
 
-    if (chat_resume[0] === "No goal defined yet - Prompt something to start")
+    if (chat_resume[0][0] === "No goal defined yet - Prompt something to start")
         chat_resume.shift();
 
-    chat_resume.push(JSON.parse(resume).resume);
-    saveStorage(`chat_resume`, JSON.stringify(chat_resume));
+    (!end) ?
+        chat_resume.push([JSON.parse(resume).resume, [start, start]])
+        : chat_resume.at(-1)[1][1] = end;
 
+    saveStorage(`chat_resume`, JSON.stringify(chat_resume));
 }
 
 
 const hasMissing = c => c.some(step => step.length > 0);
-const getChatLevel = (maxDepth) => JSON.parse(getLastInteractions(maxDepth)).length;
 
 //
 //
@@ -221,39 +223,55 @@ const getChatLevel = (maxDepth) => JSON.parse(getLastInteractions(maxDepth)).len
 //
 //
 let currentDepth = CONFIG.base_deep;
+let currenTask = false;
+let currentPlan = false;
+let prevMissing = false;
+
+function clear() {
+
+    currenTask = false;
+    currentPlan = false;
+    prevMissing = false;
+}
+
+
+//
+//
+//
 async function processMessage(msg) {
 
-    const step = CONFIG.contextStep;
-    const maxDepth = CONFIG.maxContextDepth;
+    try { startIndex = chat_resume.at(-1)[1][1] } catch (error) { }
 
     let _resume, _plan, _critical, context;
-    let chatLevel = getChatLevel(maxDepth);
     let GLOBAL_CONTEXT = await loadFromStorage(`ai_memory`);
 
-    do {
+    context = buildContext(msg, startIndex, GLOBAL_CONTEXT);
 
-        context = buildContext(msg, currentDepth, GLOBAL_CONTEXT);
-        _resume = await tryTillOk(() => resumeTask(context));
+    !currenTask ? _resume = await tryTillOk(() => resumeTask(context)) : _resume = currenTask;
+    !currenTask ? saveResumesHistory(_resume, startIndex, false) : null;
+    currenTask = _resume;
 
-        lang = lang === null ? JSON.parse(_resume).iso_code_user_message_lang : lang;
+    log(`Current task is ${currenTask} && Current context is ${context}`);
 
-        if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
+    lang = lang === null ?
+        JSON.parse(_resume).iso_code_user_message_lang : lang;
 
-            showSpinner();
-            log("non complex task detected, early exit");
+    if (JSON.parse(_resume).complexity_level_from_1_to_10 < CONFIG.complexity_level_threshold) {
 
-            localStorage.getItem("learningMode") === "true" ?
-                createTags(_resume).then((tags) => related_tags = tags) : null;
+        showSpinner();
+        log("non complex task detected, early exit");
 
-            return await completeTask(_resume, _plan, context);
-        }
+        localStorage.getItem("learningMode") === "true" ?
+            createTags(_resume).then((tags) => related_tags = tags) : null;
 
-        _plan = await tryTillOk(() => planTask(JSON.parse(_resume).resume));
-        _critical = await gatherCriticalRequirements(_plan, context)
+        return await completeTask(JSON.parse(_resume).resume, _plan, context);
+    }
 
-        currentDepth = currentDepth + step;
+    _plan = !currentPlan ? await tryTillOk(() => planTask(JSON.parse(_resume).resume)) : currentPlan;
+    currentPlan = _plan;
 
-    } while (currentDepth <= maxDepth && hasMissing(_critical) && ((currentDepth / step) < chatLevel));
+    _critical = await gatherCriticalRequirements(_plan, context, prevMissing)
+    prevMissing = !prevMissing ? _critical : prevMissing;
 
     if (!hasMissing(_critical)) {
         showSpinner();
