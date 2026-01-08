@@ -111,6 +111,8 @@ async function planTask(resume) {
 }
 
 
+//
+//
 async function completeTask(_resume, plan, context) {
 
     let resume = `Complete  task: { { ${_resume} } } following this plan: { { ${plan} } } . Output language { { ${lang} } } `,
@@ -118,9 +120,10 @@ async function completeTask(_resume, plan, context) {
 
     saveResumesHistory(_resume, startIndex, getLastUserMsgIndex());
     clear();
-    return await apiCall(resume, message, "", false);
+    return await apiCall(resume, message, "", false, true);
 
 }
+
 
 //
 //
@@ -133,6 +136,9 @@ async function askForMissingDetail(missing_info) {
     return await apiCall(resume, message, "", false)
 }
 
+
+//
+//
 async function createTags(_resume) {
 
     let tags = `Given this topic: { { ${_resume} } }, suggest 3 to ${CONFIG.max_suggested_tags} dive in related topics,
@@ -229,6 +235,7 @@ const hasMissing = c => c.some(step => step.length > 0);
 // Main flow code...
 //
 //
+
 let currentDepth = CONFIG.base_deep;
 let currenTask = false;
 let currentPlan = false;
@@ -288,3 +295,27 @@ async function processMessage(msg) {
 
 }
 
+
+//
+//
+//
+function redoFlow(index, indexResume) {
+    index > 0 ? index-- : null;
+    indexResume > 0 ? indexResume-- : null;
+
+    log(index + " " + indexResume);
+    let taskToRepeat = chat_resume[indexResume][0];
+    let taskToRepeatResult = document.querySelectorAll(`.user_message`)[index].innerText;
+
+    let message = `
+         Repeat current task so it gives a rigth outcome:
+         
+         > Objetive of task: {{ ${taskToRepeat} }}
+         > Previous wrong result: {{${taskToRepeatResult}}}
+
+         ** Outcome must be diferent **
+         `;
+
+    handleSend(message);
+
+}

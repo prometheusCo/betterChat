@@ -290,11 +290,7 @@ function send(text) {
 
 //
 //
-async function handleRedo(index) {
-    index > 0 ? index-- : null;
-
-
-}
+const handleRedo = (index, indexResume) => redoFlow(index, indexResume);
 
 
 //
@@ -311,14 +307,14 @@ async function handleCopy(index) {
 
 //
 //
-function addButtonsRedo(params) {
+function addButtonsRedo() {
 
     updateLastUserMsg();
 
     const container = document.createElement("div");
     container.innerHTML = `
          <div class="chat_actions">
-             <button class="btn-action" onclick="handleRedo(${document.querySelectorAll(".btn-action").length})">
+             <button class="btn-action" onclick="handleRedo(${document.querySelectorAll(".btn-action").length}, ${chat_resume.length})">
                  <svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
               </button>
          
@@ -341,6 +337,7 @@ async function learningTagsHandle() {
 
     const learningMode = localStorage.getItem("learningMode") ?? "false";
     if (learningMode === "false" || !Array.isArray(tags) || tags.length === 0) {
+
         addButtonsRedo();
         return;
     }
@@ -366,11 +363,11 @@ async function learningTagsHandle() {
 
 //
 //
-async function handleSend() {
+async function handleSend(_msg = false) {
 
     showSpinner();
 
-    const text = input.value.trim();
+    const text = !_msg ? input.value.trim() : _msg;
     if (!text) return;
 
     appendToUI(text, 'user');
@@ -391,10 +388,11 @@ async function handleSend() {
 
             document.querySelectorAll(".flex.w-full.fade-in-up.justify-start")[document.querySelectorAll(".flex.w-full.fade-in-up.justify-start").length - 1].remove();
             appendToUI(response, 'assistant');
+            learningTagsHandle();
 
         }
+
         saveMessage(response, 'assistant');
-        learningTagsHandle();
         scrollChatEnd();
 
     }, 600);

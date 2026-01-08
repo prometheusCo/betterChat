@@ -98,7 +98,15 @@ function getRespFromJSON(data = data.response, out = false) {
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 //
-async function apiCall(prompt, instructions = "Be a helpful asistant", _responseFormat = "", showThinking = true) {
+async function apiCall(
+
+    prompt,
+    instructions = "Be a helpful asistant",
+    _responseFormat = "",
+    showThinking = true,
+    finaltask = false,
+
+) {
 
     const input = [];
     const _key = await loadFromStorage(`apiKey`);
@@ -119,6 +127,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
 
     if (!CONFIG.stream || _responseFormat === "cloud_tags")
         return getRespFromJSON(await response.json());
+
 
     try { showSpinner(false); } catch (error) { }
     //
@@ -182,6 +191,7 @@ async function apiCall(prompt, instructions = "Be a helpful asistant", _response
 
     time();
     thinking.textContent += "\n \n";
+    finaltask ? learningTagsHandle() : null;
     return fullText;
 
 }
