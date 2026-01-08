@@ -361,6 +361,48 @@
       max-width: 100%;
 } 
 
+
+.chat_actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+}
+
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--bg-btn);
+    color: var(--txt-btn);
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 45px;
+}
+
+.btn-action:hover {
+    background-color: var(--hover-btn);
+}
+
+.btn-action:active {
+    transform: scale(0.98);
+}
+
+.btn-action svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.monologue{
+    margin-bottom: 10px!important;
+    margin-top: 10px!important;
+}
+
+
+
 /** CSS QUERIES**/
 
  @media (min-width: 1201px) {

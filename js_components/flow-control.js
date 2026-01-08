@@ -239,6 +239,7 @@ function clear() {
     currenTask = false;
     currentPlan = false;
     prevMissing = false;
+    related_tags = [];
 }
 
 

@@ -244,10 +244,10 @@ function appendToUI(content, role, animate = true) {
 function showFeedback(text) {
 
     const feedback = document.createElement('div');
-    feedback.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-2 rounded-full text-sm shadow-lg fade-in-up z-50";
+    feedback.className = "feedback fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-2 rounded-full text-sm shadow-lg fade-in-up z-50";
     feedback.textContent = text;
     document.body.appendChild(feedback);
-    setTimeout(() => feedback.remove(), 2500);
+    setTimeout(() => feedback.remove(), 3500);
 
 }
 
@@ -288,6 +288,49 @@ function send(text) {
 
 }
 
+//
+//
+async function handleRedo(index) {
+    index > 0 ? index-- : null;
+
+
+}
+
+
+//
+//
+async function handleCopy(index) {
+    index > 0 ? index-- : null;
+
+    let el = document.querySelectorAll(`.user_message`)[index];
+    let textToCopy = el.innerText;
+
+    navigator.clipboard.writeText(textToCopy).then((text) => showFeedback("Text copied to clipboard!"));
+}
+
+
+//
+//
+function addButtonsRedo(params) {
+
+    updateLastUserMsg();
+
+    const container = document.createElement("div");
+    container.innerHTML = `
+         <div class="chat_actions">
+             <button class="btn-action" onclick="handleRedo(${document.querySelectorAll(".btn-action").length})">
+                 <svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+              </button>
+         
+             <button class="btn-action" onclick="handleCopy(${document.querySelectorAll(".btn-action").length})">
+                 <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+             </button>
+          </div>`;
+
+    lastUserMsg.appendChild(container.firstElementChild);
+
+}
+
 
 //
 //
@@ -297,12 +340,12 @@ async function learningTagsHandle() {
     try { tags = JSON.parse(related_tags).related_dive_in_topics; } catch (e) { }
 
     const learningMode = localStorage.getItem("learningMode") ?? "false";
-    if (learningMode === "false" || !Array.isArray(tags) || tags.length === 0) return;
+    if (learningMode === "false" || !Array.isArray(tags) || tags.length === 0) {
+        addButtonsRedo();
+        return;
+    }
 
     updateLastUserMsg();
-
-    log(`tags are \n`);
-    log(tags);
 
     const tagCloud = document.createElement("div");
     tagCloud.className = "tag-cloud";
@@ -317,8 +360,9 @@ async function learningTagsHandle() {
         tagItem.onclick = () => send(tag);
     });
     lastUserMsg.appendChild(tagCloud);
-}
+    addButtonsRedo();
 
+}
 
 //
 //
