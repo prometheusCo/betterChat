@@ -110,9 +110,21 @@ async function decrypt(cipherText) {
 //
 
 
-function saveMessage(content, role) {
+function saveMessage(content, role, actions = false, resume = false) {
 
-    chatHistory.push({ content, role });
+    let el = false;
+
+    try {
+        el = document.querySelectorAll(`.user_message`)[document.querySelectorAll(`.user_message`).length - 1]
+    } catch (error) { };
+
+
+    if (role === "assistant" && el.querySelectorAll(".chat_actions").length > 0) {
+        actions = true;
+        resume = chat_resume.at(-1)[0];
+    }
+
+    chatHistory.push({ content, role, actions, resume });
     saveStorage('chat_history', JSON.stringify(chatHistory));
 
 }

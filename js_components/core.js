@@ -13,7 +13,7 @@ loadFromStorage(`model`).then((key) => modelNameUsed = key)
 // Core functions
 //
 
-const updateThinking = () => thinking = document.getElementById(`monologue-${document.querySelectorAll(".user-msg").length}`);
+const updateThinking = () => thinking = document.querySelectorAll(`.monologue`)[document.querySelectorAll(`.monologue`).length - 1];
 const updateLastUserMsg = () => lastUserMsg = document.getElementsByClassName("user_message")[document.getElementsByClassName("user_message").length - 1]
 
 const scrollChatEnd = () => {

@@ -299,13 +299,12 @@ async function processMessage(msg) {
 //
 //
 //
-function redoFlow(index, indexResume) {
-    index > 0 ? index-- : null;
-    indexResume > 0 ? indexResume-- : null;
+function redoFlow(e) {
 
-    log(index + " " + indexResume);
-    let taskToRepeat = chat_resume[indexResume][0];
-    let taskToRepeatResult = document.querySelectorAll(`.user_message`)[index].innerText;
+    let el = e.parentElement.parentElement; log(el);
+
+    let taskToRepeat = el.getAttribute("resume");
+    let taskToRepeatResult = el.innerText;
 
     let message = `
          Repeat current task so it gives a rigth outcome:
@@ -316,6 +315,7 @@ function redoFlow(index, indexResume) {
          ** Outcome must be diferent **
          `;
 
-    handleSend(message);
+    log(message);
+    handleSend(message, false);
 
 }

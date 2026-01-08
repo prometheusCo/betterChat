@@ -170,7 +170,9 @@ function cleanInput(id) {
 }
 
 
-function appendToUI(content, role, animate = true) {
+//
+//
+function appendToUI(content, role, animate = true, actions = false, resume = false) {
 
     if (!hero.classList.contains('hidden')) {
         hero.classList.add('hidden');
@@ -229,10 +231,19 @@ function appendToUI(content, role, animate = true) {
             </div>
             <div class="user_message  pre-style message-content text-[16px] text-[var(--text-main)] pt-1">${content}</div>
         `;
+
     }
+
 
     wrapper.appendChild(message);
     messageList.appendChild(wrapper);
+
+    let el = wrapper.querySelectorAll(".user_message")[0];
+    if (actions) {
+        addButtonsRedo(el);
+        log(resume);
+        el.setAttribute("resume", resume)
+    }
 
     chatArea.scrollTo({
         top: chatArea.scrollHeight,
@@ -290,16 +301,15 @@ function send(text) {
 
 //
 //
-const handleRedo = (index, indexResume) => redoFlow(index, indexResume);
+const handleRedo = (e) => redoFlow(e);
 
 
 //
 //
-async function handleCopy(index) {
-    index > 0 ? index-- : null;
+async function handleCopy(e) {
 
-    let el = document.querySelectorAll(`.user_message`)[index];
-    let textToCopy = el.innerText;
+    let textToCopy = e.parentElement.parentElement.innerText;
+    log(textToCopy);
 
     navigator.clipboard.writeText(textToCopy).then((text) => showFeedback("Text copied to clipboard!"));
 }
@@ -307,23 +317,26 @@ async function handleCopy(index) {
 
 //
 //
-function addButtonsRedo() {
+function addButtonsRedo(toInsert = false) {
 
     updateLastUserMsg();
 
     const container = document.createElement("div");
     container.innerHTML = `
          <div class="chat_actions">
-             <button class="btn-action" onclick="handleRedo(${document.querySelectorAll(".btn-action").length}, ${chat_resume.length})">
+             <button class="btn-action" onclick="handleRedo(this)">
                  <svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
               </button>
          
-             <button class="btn-action" onclick="handleCopy(${document.querySelectorAll(".btn-action").length})">
+             <button class="btn-action" onclick="handleCopy(this)">
                  <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
              </button>
           </div>`;
 
-    lastUserMsg.appendChild(container.firstElementChild);
+    !toInsert ? lastUserMsg.appendChild(container.firstElementChild)
+        : toInsert.appendChild(container.firstElementChild);
+
+    try { lastUserMsg.setAttribute("resume", chat_resume.at(-1)[0]) } catch (error) { };
 
 }
 
@@ -363,15 +376,15 @@ async function learningTagsHandle() {
 
 //
 //
-async function handleSend(_msg = false) {
+async function handleSend(_msg = false, show = true) {
 
     showSpinner();
 
     const text = !_msg ? input.value.trim() : _msg;
     if (!text) return;
 
-    appendToUI(text, 'user');
-    saveMessage(text, 'user');
+    show ? appendToUI(text, 'user') : null;
+    show ? saveMessage(text, 'user') : null;
 
     input.value = '';
     input.style.height = 'auto';
@@ -381,7 +394,7 @@ async function handleSend(_msg = false) {
 
         appendToUI("Thinking... \n \n", 'monologue');
         appendToUI("", 'assistant');
-        const response = await processMessage(text);
+        const response = await processMessage(text, show);
         scrollChatEnd();
 
         if (!CONFIG.stream) {
@@ -426,7 +439,7 @@ async function loadChatHistory() {
     chatHistory = raw ? JSON.parse(raw) : [];
 
     chatHistory.forEach(msg => {
-        appendToUI(msg.content, msg.role, false);
+        appendToUI(msg.content, msg.role, false, msg.actions, msg.resume);
     });
 
 }
