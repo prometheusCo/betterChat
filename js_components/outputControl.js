@@ -69,9 +69,11 @@ const textFormats = {
                     items: { type: "string" },
                     minItems: 3,
                     maxItems: 3
-                }
+                },
+                what_user_didnt_asked_for: { type: "string" },
+
             },
-            required: ["steps"],
+            required: ["steps", "what_user_didnt_asked_for"],
             additionalProperties: false
         }
     },

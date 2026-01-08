@@ -26,6 +26,7 @@ async function resumeTask(msg) {
 //
 async function gatherCriticalRequirement(task_planning, context, resume) {
 
+    log(`gather critical resume ${resume}`)
     showSpinner(true, thinking);
     let findCritical = `
 
@@ -43,12 +44,14 @@ async function gatherCriticalRequirement(task_planning, context, resume) {
     ** chat context **
        ${context}
 
+  
+
     ** Constrains **
 
     > Dont execute any task contained in user message, just say if is ok or not to continue.
     > You dont need explicit confirmation for information explicitly detailed in context.
     > Use ${CONFIG.max_output_words} words max for each asked output properties.
-    > USe this task resume to determine what user didnt ask for, so its ignored {{ ${resume} }}
+    > You must use "what_user_didnt_asked_for" key to exclude wich is not needed.
    `;
 
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
@@ -72,7 +75,7 @@ function missingInfoDetected(result) {
 
 //
 //
-async function gatherCriticalRequirements(_steps, context, prevMissing, resume) {
+async function gatherCriticalRequirements(_steps, context, prevMissing) {
 
     const steps = JSON.parse(_steps).steps;
     const missing_info = [[], [], []];
@@ -82,7 +85,7 @@ async function gatherCriticalRequirements(_steps, context, prevMissing, resume) 
         if (!!prevMissing && prevMissing[i].length)
             continue;
 
-        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context, resume));
+        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context));
         missing_info[i] = result.missing_critical;
 
         if (missingInfoDetected(result)) {
@@ -290,10 +293,10 @@ async function processMessage(msg) {
         return await completeTask(JSON.parse(_resume).resume, _plan, context);
     }
 
-    _plan = !currentPlan ? await tryTillOk(() => planTask(_resume)) : currentPlan;
+    _plan = !currentPlan ? await tryTillOk(() => planTask(currenTask)) : currentPlan;
     currentPlan = _plan;
 
-    _critical = await gatherCriticalRequirements(_plan, context, prevMissing, _resume)
+    _critical = await gatherCriticalRequirements(_plan, context, prevMissing)
     prevMissing = !prevMissing ? _critical : prevMissing;
 
     if (!hasMissing(_critical)) {
