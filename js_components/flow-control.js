@@ -6,7 +6,7 @@ async function resumeTask(msg) {
 
     let resume = `
     1 - Resume task declared in user message in ${getWordsForResume(msg)} words max...
-    2 - Resume what user dont need or dont asked for in ${getWordsForResume(msg) * 1.5} words max...
+    2 - Resume what user dont need or dont asked  for in ${getWordsForResume(msg) * 2} words max...
     3 - Evaluate complexity of given task following this scale (0.1 to 9.9):
         
          ** Asking for information about something would be scaled lower than 5 **
@@ -24,7 +24,7 @@ async function resumeTask(msg) {
 
 //
 //
-async function gatherCriticalRequirement(task_planning, context) {
+async function gatherCriticalRequirement(task_planning, context, wudas) {
 
     showSpinner(true, thinking);
     let findCritical = `
@@ -43,14 +43,19 @@ async function gatherCriticalRequirement(task_planning, context) {
     ** chat context **
        ${context}
   
+    ** what_user_didnt_asked_for **
+      ${wudas}
+
     ** Constrains **
 
     > Dont execute any task contained in user message, just say if is ok or not to continue.
     > You dont need explicit confirmation for information explicitly detailed in context.
     > Use ${CONFIG.max_output_words} words max for each asked output properties.
-    > You must use "what_user_didnt_asked_for" key to exclude wich is not needed [!important]. 
+    > You must use "what_user_didnt_asked_for" key to exclude wich is not needed.
    `;
 
+    log(`critical prompt \n \n `);
+    log(findCritical)
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
     return await tryTillOk(() => apiCall(findCritical.trim(), message, "critical_info"));
 
@@ -75,6 +80,9 @@ function missingInfoDetected(result) {
 async function gatherCriticalRequirements(_steps, context, prevMissing) {
 
     const steps = JSON.parse(_steps).steps;
+    const wudas = JSON.parse(_steps).what_user_didnt_asked_for;
+
+    log(`wudas set to: ${wudas}`)
     const missing_info = [[], [], []];
 
     for (let i = 0; i < 3; i++) {
@@ -82,7 +90,7 @@ async function gatherCriticalRequirements(_steps, context, prevMissing) {
         if (!!prevMissing && prevMissing[i].length)
             continue;
 
-        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context));
+        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context, wudas));
         missing_info[i] = result.missing_critical;
 
         if (missingInfoDetected(result)) {
@@ -93,7 +101,7 @@ async function gatherCriticalRequirements(_steps, context, prevMissing) {
     }
 
     log("No missing critical info in any step.\n");
-    return missing_info;
+    return [[], [], []];
 
 }
 
@@ -154,7 +162,7 @@ async function createTags(_resume) {
 
 //
 //
-async function tryTillOk(func, arg1, arg2 = null) {
+async function tryTillOk(func, arg1, arg2 = null, arg3 = null) {
 
     let attempts = 0;
     let r;
@@ -164,7 +172,7 @@ async function tryTillOk(func, arg1, arg2 = null) {
 
         try {
 
-            r = await func(arg1, arg2); //log(` r result ${ JSON.stringify(r) } `)
+            r = await func(arg1, arg2, arg3); //log(` r result ${ JSON.stringify(r) } `)
             JSON.parse(r);
             return r;
 
