@@ -79,8 +79,13 @@ function setEvents() {
     });
 
     sendBtn.addEventListener('click', () => { handleSend() });
+
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
+
+            if (!stopBtn.classList.contains("hidden"))
+                return;
+
             e.preventDefault();
             handleSend();
         }
