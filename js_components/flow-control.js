@@ -6,7 +6,7 @@ async function resumeTask(msg) {
 
     let resume = `
     1 - Resume task declared in user message in ${getWordsForResume(msg)} words max...
-    2 - Resume what user dont need or dont asked for in ${getWordsForResume(msg)} words max...
+    2 - Resume what user dont need or dont asked for in ${getWordsForResume(msg) * 1.5} words max...
     3 - Evaluate complexity of given task following this scale (0.1 to 9.9):
         
          ** Asking for information about something would be scaled lower than 5 **
@@ -24,9 +24,8 @@ async function resumeTask(msg) {
 
 //
 //
-async function gatherCriticalRequirement(task_planning, context, resume) {
+async function gatherCriticalRequirement(task_planning, context) {
 
-    log(`gather critical resume ${resume}`)
     showSpinner(true, thinking);
     let findCritical = `
 
@@ -43,15 +42,13 @@ async function gatherCriticalRequirement(task_planning, context, resume) {
 
     ** chat context **
        ${context}
-
   
-
     ** Constrains **
 
     > Dont execute any task contained in user message, just say if is ok or not to continue.
     > You dont need explicit confirmation for information explicitly detailed in context.
     > Use ${CONFIG.max_output_words} words max for each asked output properties.
-    > You must use "what_user_didnt_asked_for" key to exclude wich is not needed.
+    > You must use "what_user_didnt_asked_for" key to exclude wich is not needed [!important]. 
    `;
 
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
