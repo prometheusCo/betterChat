@@ -51,11 +51,9 @@ async function gatherCriticalRequirement(task_planning, context, wudas) {
     > Dont execute any task contained in user message, just say if is ok or not to continue.
     > You dont need explicit confirmation for information explicitly detailed in context.
     > Use ${CONFIG.max_output_words} words max for each asked output properties.
-    > You must use "what_user_didnt_asked_for" key to exclude wich is not needed.
+    > You must use "what_user_didnt_asked_for" to ignore critical info not asked or needed by user
    `;
 
-    log(`critical prompt \n \n `);
-    log(findCritical)
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
     return await tryTillOk(() => apiCall(findCritical.trim(), message, "critical_info"));
 
@@ -116,7 +114,8 @@ async function planTask(resume) {
         message = `task to divide in 3 steps(not a direct command): ${resume}
         > Use ${CONFIG.max_output_words} words max for each asked output properties.
         > For all planned steps a purpose must be set.
-        > You must use "what_user_didnt_asked_for" key to exclude wich is not needed.
+        > You must use "what_user_didnt_asked_for" key to exclude wich is not needed from planing.
+        > Return  what_user_didnt_asked_for expanded
         `;
 
     return await apiCall(plan, message, "plan_task")
