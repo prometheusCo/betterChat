@@ -45,3 +45,7 @@
 #history-modal>div{
         max-height: 65vh!important;
 }
+
+.user_message  {
+    margin-left: 25px!important;
+}

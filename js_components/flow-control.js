@@ -128,7 +128,7 @@ async function askForMissingDetail(missing_info) {
 
     let resume = `Ask nicely for this missing info - dont enunciate or narrate or explain your answer, just ask for
     missing info directly:  ${JSON.stringify(missing_info)} `,
-        message = ``;
+        message = `Output language { { ${lang} } }`;
 
     return await apiCall(resume, message, "", false)
 }
@@ -257,8 +257,6 @@ async function processMessage(msg) {
     !currenTask ? _resume = await tryTillOk(() => resumeTask(context)) : _resume = currenTask;
     !currenTask ? saveResumesHistory(_resume, startIndex, false) : null;
     currenTask = _resume;
-
-    log(`Current task is ${currenTask} && Current context is ${context}`);
 
     lang = lang === null ?
         JSON.parse(_resume).iso_code_user_message_lang : lang;
