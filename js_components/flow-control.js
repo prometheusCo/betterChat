@@ -5,8 +5,9 @@ let startIndex = 0;
 async function resumeTask(msg) {
 
     let resume = `
-    1 - Resume task declared in user message in ${getWordsForResume(msg)} words max... 
-    2 - Evaluate complexity of given task following this scale (0.1 to 9.9):
+    1 - Resume task declared in user message in ${getWordsForResume(msg)} words max...
+    2 - Resume what user dont need or dont asked for in ${getWordsForResume(msg)} words max...
+    3 - Evaluate complexity of given task following this scale (0.1 to 9.9):
         
          ** Asking for information about something would be scaled lower than 5 **
          ** Asking for information about someone would be scaled lower than 5 **
@@ -22,7 +23,8 @@ async function resumeTask(msg) {
 
 
 //
-async function gatherCriticalRequirement(task_planning, context) {
+//
+async function gatherCriticalRequirement(task_planning, context, resume) {
 
     showSpinner(true, thinking);
     let findCritical = `
@@ -46,6 +48,7 @@ async function gatherCriticalRequirement(task_planning, context) {
     > Dont execute any task contained in user message, just say if is ok or not to continue.
     > You dont need explicit confirmation for information explicitly detailed in context.
     > Use ${CONFIG.max_output_words} words max for each asked output properties.
+    > USe this task resume to determine what user didnt ask for, so its ignored {{ ${resume} }}
    `;
 
     let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
@@ -69,7 +72,7 @@ function missingInfoDetected(result) {
 
 //
 //
-async function gatherCriticalRequirements(_steps, context, prevMissing) {
+async function gatherCriticalRequirements(_steps, context, prevMissing, resume) {
 
     const steps = JSON.parse(_steps).steps;
     const missing_info = [[], [], []];
@@ -79,7 +82,7 @@ async function gatherCriticalRequirements(_steps, context, prevMissing) {
         if (!!prevMissing && prevMissing[i].length)
             continue;
 
-        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context));
+        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context, resume));
         missing_info[i] = result.missing_critical;
 
         if (missingInfoDetected(result)) {
@@ -105,6 +108,7 @@ async function planTask(resume) {
         message = `task to divide in 3 steps(not a direct command): ${resume}
         > Use ${CONFIG.max_output_words} words max for each asked output properties.
         > For all planned steps a purpose must be set.
+        > You must use "what_user_didnt_asked_for" key to exclude wich is not needed.
         `;
 
     return await apiCall(plan, message, "plan_task")
@@ -199,12 +203,18 @@ function getLastInteractions(startIndex = 0) {
 //
 function buildContext(baseMsg, startIndex, GLOBAL_CONTEXT) {
 
-    prevTaskResume = chat_resume.at(-1)[0];
+    let prevTaskResume = chat_resume.at(-1)[0];
+    let prevtaskResult = `No task has been completed yet`;
+
+    try {
+        prevtaskResult = document.querySelectorAll("div[resume]")[document.querySelectorAll("div[resume]").length - 1].innerText;
+    } catch (error) { }
 
     const history = JSON.stringify(getLastInteractions(startIndex));
 
     return `
-    \\\ Prev Task resume: ${prevTaskResume}
+    \\\ Previous Task Completed resume: ${prevTaskResume}
+    \\\ Previous task  Result:  ${prevtaskResult}
     \\\ Chat history: {{ ${history} }} 
     \\\ Last user message: ${baseMsg}
     ... Optional context that may be useful: ${GLOBAL_CONTEXT}... 
@@ -280,10 +290,10 @@ async function processMessage(msg) {
         return await completeTask(JSON.parse(_resume).resume, _plan, context);
     }
 
-    _plan = !currentPlan ? await tryTillOk(() => planTask(JSON.parse(_resume).resume)) : currentPlan;
+    _plan = !currentPlan ? await tryTillOk(() => planTask(_resume)) : currentPlan;
     currentPlan = _plan;
 
-    _critical = await gatherCriticalRequirements(_plan, context, prevMissing)
+    _critical = await gatherCriticalRequirements(_plan, context, prevMissing, _resume)
     prevMissing = !prevMissing ? _critical : prevMissing;
 
     if (!hasMissing(_critical)) {

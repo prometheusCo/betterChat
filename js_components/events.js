@@ -78,7 +78,7 @@ function setEvents() {
         sendBtn.disabled = this.value.trim().length === 0;
     });
 
-    sendBtn.addEventListener('click', handleSend);
+    sendBtn.addEventListener('click', () => { handleSend() });
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();

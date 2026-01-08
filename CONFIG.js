@@ -15,8 +15,8 @@ const CONFIG = {
     users prompts are too short and LLMs tends to fill the gaps with extra words/ideas, causing 
     some deviation from original idea, and therefore hallucinations`,
 
-    max_resume_words_a: 7,
-    max_resume_words_b: 3,
+    max_resume_words_a: 25,
+    max_resume_words_b: 10,
 
     stream: true,
 
