@@ -7,6 +7,8 @@ const workspace = document.getElementById('workspace-container');
 const body = document.getElementsByClassName('body')[0];
 const learningButton = document.getElementById('learning-button');
 const tagItems = document.querySelectorAll('.tag-item');
+const stopBtn = document.querySelectorAll('#stop-button')[0];
+
 
 let lastUserMsg = null;
 let thinking = null;

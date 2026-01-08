@@ -275,8 +275,9 @@
                         <textarea id="user-input" rows="1" placeholder="Enter a prompt here"
                             class="w-full bg-transparent border-none focus:ring-0 outline-none py-3 text-[16px] text-[var(--text-main)] placeholder-gray-500 max-h-[200px] overflow-y-auto no-scrollbar"></textarea>
                         <div class="flex items-center space-x-1 mb-1">
+
                             <button id="send-button" aria-label="Send prompt"
-                                class="p-3 text-gray-400 hover:text-[var(--text-main)] transition-all disabled:opacity-0"
+                                class="p-2 text-gray-400 hover:text-[var(--text-main)] transition-all disabled:opacity-0"
                                 disabled>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -285,7 +286,13 @@
                                     <path d="M12 19V5" />
                                 </svg>
                             </button>
-                        </div>
+
+                              <button onclick="location.reload()" id="stop-button" class="p2 ai-stop-btn hidden" title="Stop generating">
+                                     <div class="pulse-ring"></div>
+                                     <div class="stop-icon"></div>
+                             </button>
+                        
+                            </div>
                     </div>
                 </div>
             </div>

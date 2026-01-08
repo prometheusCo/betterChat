@@ -376,9 +376,18 @@ async function learningTagsHandle() {
 
 //
 //
+function toggleButtons() {
+
+    sendBtn.classList.toggle('hidden');
+    stopBtn.classList.toggle('hidden');
+}
+
+//
+//
 async function handleSend(_msg = false, show = true) {
 
     showSpinner();
+    toggleButtons()
 
     const text = !_msg ? input.value.trim() : _msg;
     if (!text) return;
@@ -407,6 +416,7 @@ async function handleSend(_msg = false, show = true) {
 
         saveMessage(response, 'assistant');
         scrollChatEnd();
+        toggleButtons();
 
     }, 600);
 }
