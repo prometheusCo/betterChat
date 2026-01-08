@@ -193,10 +193,17 @@ function getLastInteractions(startIndex = 0) {
 //
 function buildContext(baseMsg, startIndex, GLOBAL_CONTEXT) {
 
+    prevTaskResume = chat_resume.at(-1)[0];
+
     const history = JSON.stringify(getLastInteractions(startIndex));
-    return `{{ ${history} }} \\\ last user message: ${baseMsg}
+
+    return `
+    \\\ Prev Task resume: ${prevTaskResume}
+    \\\ Chat history: {{ ${history} }} 
+    \\\ Last user message: ${baseMsg}
     ... Optional context that may be useful: ${GLOBAL_CONTEXT}... 
     Never reference to this context in your answer, just use it if applied, dont talk about.`;
+
 }
 
 
