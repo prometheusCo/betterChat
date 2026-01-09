@@ -401,7 +401,7 @@ async function handleSend(_msg = false, show = true) {
 
     setTimeout(async () => {
 
-        appendToUI("Thinking... \n \n", 'monologue');
+        appendToUI("Thinking...", 'monologue');
         appendToUI("", 'assistant');
         const response = await processMessage(text, show);
         scrollChatEnd();

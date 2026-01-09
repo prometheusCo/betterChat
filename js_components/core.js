@@ -144,6 +144,7 @@ async function apiCall(
 
     let buffer = "";
     let fullText = "";
+    thinking.textContent += "\n \n";
 
     while (true) {
 
@@ -190,7 +191,6 @@ async function apiCall(
     }
 
     time();
-    thinking.textContent += "\n \n";
     finaltask ? learningTagsHandle() : null;
     return fullText;
 
