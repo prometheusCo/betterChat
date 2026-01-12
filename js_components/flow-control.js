@@ -5,14 +5,20 @@ let startIndex = 0;
 async function resumeTask(msg) {
 
     let resume = `
+    0 - Before following instructions bellow, define if current message is continuation of previous task
+    defined in context. Then follow instructions bellow:
+
+    ** Dont stop after determining if current msg is related to previous task, follow instructions bellow **
+
     1 - Resume task declared in user message in ${getWordsForResume(msg)} words max...
     2 - Resume what user dont need or dont asked  for in ${getWordsForResume(msg) * 2} words max...
     3 - Evaluate complexity of given task following this scale (0.1 to 9.9):
         
          ** Asking for information about something would be scaled lower than 5 **
+         ** Asking for information about how to do something would be scaled lower than 5 **
          ** Asking for information about someone would be scaled lower than 5 **
 
-         ** Any request that involves creativity writing or coding  would be rate from 6 to 10 **
+         ** Any request that involves a model to perform a creative action or the model to  write code  would be rate from 6 to 10 **
     3- Deliver original message lang iso code example: [es, en...]
          `
 
