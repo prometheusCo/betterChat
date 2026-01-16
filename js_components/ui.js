@@ -322,10 +322,10 @@ function showSelectCopy(_text) {
     bg.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     bg.id = 'copy-alert';
 
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = localStorage.getItem("ligthMode") === "false" ? true : false;
 
     const clasesAlert = [
-        (isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'),
+        (isDark ? 'bg-black text-gray-100' : 'whiteMode'),
         'p-6 rounded-lg shadow-xl max-w-sm w-full flex flex-col gap-4'
     ].join(' ');
 
@@ -333,7 +333,7 @@ function showSelectCopy(_text) {
     <div class="${clasesAlert}">
         <span class="text-lg font-semibold block mb-2">What do you need to copy?</span>
         <div class="flex flex-col gap-2">
-            <button id="btn-copy-all" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 focus:outline-none">All text</button>
+            <button id="btn-copy-all" class= text-white py-2 rounded hover:bg-blue-700 focus:outline-none">All text</button>
             <button id="btn-copy-code" class="${isDark ? 'bg-gray-700' : 'bg-gray-200'} text-sm py-2 rounded hover:bg-gray-400 focus:outline-none">Only code</button>
         </div>
     </div>

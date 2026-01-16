@@ -54,3 +54,34 @@
     bottom: 25px!important;
     background-color: rgb(63, 40, 87)!important;
 }
+
+#copy-alert >div {
+    background: #1e1f20!important;
+    max-width: 280px;
+    border-radius: 28px;
+}
+
+
+#copy-alert #btn-copy-all{
+  background:  #f5f5f54a!important;
+}
+
+#copy-alert #btn-copy-code{
+  background:   rgb(192 132 252 / var(--tw-text-opacity, 1))!important;
+  margin-top: 5px;
+}
+
+#copy-alert button{
+    padding: 10px!important;
+     border-radius: 10px!important;
+}
+
+#copy-alert .whiteMode {
+    background-color: #e3e3e3!important;
+}
+
+#copy-alert .whiteMode   #btn-copy-all{
+
+    background-color: #1e1f203d!important;
+    color: black;
+}
