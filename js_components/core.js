@@ -40,7 +40,6 @@ function errorHandling(errorCode = null, error = null) {
 
         let e = new errorCode();
         !!e.action ? e.action() : null
-
         throw e;
 
     } catch (e) {

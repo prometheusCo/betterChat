@@ -127,7 +127,7 @@ async function tryTillOk(func, arg1, arg2 = null, arg3 = null) {
         try {
             console.log("tryTillOk attemp " + attempts);
 
-            r = await func(arg1, arg2, arg3); //log(` r result ${ JSON.stringify(r) } `)
+            r = await func(arg1, arg2, arg3);
             JSON.parse(r);
             return r;
 
