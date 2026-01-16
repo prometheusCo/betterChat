@@ -78,7 +78,8 @@ const completeTaskPrompt = (_resume, plan, context) => {
 
     let complete = `Complete  task: { { ${_resume} } } following this plan: { { ${plan} } } . Output language { { ${lang} } } `;
 
-    let message = `Context for the current task: ${context}.Finally: be breve and concise `;
+    let message = `Context for the current task: ${context}.Finally: be breve and concise. 
+    Important conditiona: If code output is expected deliver it bettwen <code></code> tags. `;
 
     return [complete, message];
 }
