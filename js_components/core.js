@@ -15,6 +15,7 @@ loadFromStorage(`model`).then((key) => modelNameUsed = key)
 
 const updateThinking = () => thinking = document.querySelectorAll(`.monologue`)[document.querySelectorAll(`.monologue`).length - 1];
 const updateLastUserMsg = () => lastUserMsg = document.getElementsByClassName("user_message")[document.getElementsByClassName("user_message").length - 1]
+const wait = (secs) => new Promise(resolve => setTimeout(resolve, secs * 1000));
 
 const scrollChatEnd = () => {
 

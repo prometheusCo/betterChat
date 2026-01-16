@@ -25,4 +25,6 @@ const CONFIG = {
     max_suggested_tags: 5,
 
     max_output_words: 7,
+
+    secs_to_wait_for_net_retry: 3,
 };

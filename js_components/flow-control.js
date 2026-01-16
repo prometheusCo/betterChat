@@ -112,6 +112,7 @@ async function createTags(_resume) {
     return await apiCall(p[0], p[1], "cloud_tags", false);
 }
 
+
 //
 //
 async function tryTillOk(func, arg1, arg2 = null, arg3 = null) {
@@ -119,20 +120,26 @@ async function tryTillOk(func, arg1, arg2 = null, arg3 = null) {
     let attempts = 0;
     let r;
     const max = CONFIG.max_retry_attemps;
+    let httpErr = false;
 
     while (attempts < max) {
 
         try {
+            console.log("tryTillOk attemp " + attempts);
 
             r = await func(arg1, arg2, arg3); //log(` r result ${ JSON.stringify(r) } `)
             JSON.parse(r);
             return r;
 
-        } catch (e) { errorHandling("", e) }
+        } catch (e) {
+
+            !httpErr ? httpErr = e : null;
+            await wait(CONFIG.secs_to_wait_for_net_retry);
+        }
         attempts++;
     }
 
-    errorHandling(BAR);
+    errorHandling(BAR, (!!httpErr ? httpErr : null));
 }
 
 //
