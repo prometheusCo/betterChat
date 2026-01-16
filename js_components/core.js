@@ -144,7 +144,7 @@ async function apiCall(
 
     let buffer = "";
     let fullText = "";
-    thinking.textContent += "\n \n";
+    thinking.textContent += "\n";
 
     while (true) {
 

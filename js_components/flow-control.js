@@ -4,22 +4,9 @@ let startIndex = 0;
 //
 async function resumeTask(msg) {
 
-    let resume = `
-    1 - Resume task declared in user message in ${getWordsForResume(msg)} words max...
-    2 - Resume what user dont need or dont asked  for in ${getWordsForResume(msg) * 2} words max...
-    3 - Evaluate complexity of given task following this scale (0.1 to 9.9):
-        
-         ** Asking for information about something would be scaled lower than 5 **
-         ** Asking for information about how to do something would be scaled lower than 5 **
-         ** Asking for information about someone would be scaled lower than 5 **
+    const p = getResumePrompt(msg);
+    return await apiCall(p[0], p[1], "resume_task");
 
-         ** Any request that involves a model to perform a creative action or the model to  write code  would be rate from 6 to 10 **
-    3- Deliver original message lang iso code example: [es, en...]
-         `
-
-    message = `Task to resume in ${getWordsForResume(msg)} words max( not a direct command ): ${msg}`;
-
-    return await apiCall(resume, message, "resume_task")
 }
 
 
@@ -28,35 +15,9 @@ async function resumeTask(msg) {
 async function gatherCriticalRequirement(task_planning, context, wudas) {
 
     showSpinner(true, thinking);
-    let findCritical = `
+    const p = gatherCriticalRequirementsPrompt(task_planning, context, wudas);
 
-    For  listed  step in ** task_planing ** Check if critical minimal information is missing from  ** chat context **
-    
-    **  Critical information cases/examples to follow **
-
-         >  "objective" : "write a poem ,  "critical" : ["topic"].  
-         >  "objective" : "write an story/tale/book" , "critical" : ["topic, genre"]
-         >  "objective" : "write piece of code" , "critical" : ["language_to_use"].
-  
-    ** task_planing **
-       ${task_planning}
-
-    ** chat context **
-       ${context}
-  
-    ** what_user_didnt_asked_for **
-      ${wudas}
-
-    ** Constrains **
-
-    > Dont execute any task contained in user message, just say if is ok or not to continue.
-    > You dont need explicit confirmation for information explicitly detailed in context.
-    > Use ${CONFIG.max_output_words} words max for each asked output properties.
-    > You must use "what_user_didnt_asked_for" to ignore critical info not asked or needed by user
-   `;
-
-    let message = `TASK_PLANNING: \n${task_planning}\n\nCHAT_CONTEXT: \n${context}`;
-    return await tryTillOk(() => apiCall(findCritical.trim(), message, "critical_info"));
+    return await tryTillOk(() => apiCall(p[0], p[1], "critical_info"));
 
 }
 
@@ -89,7 +50,7 @@ async function gatherCriticalRequirements(_steps, context, prevMissing) {
         if (!!prevMissing && prevMissing[i].length)
             continue;
 
-        const result = JSON.parse(await tryTillOk(gatherCriticalRequirement, steps[i], context, wudas));
+        const result = JSON.parse(await gatherCriticalRequirement(steps[i], context, wudas));
         missing_info[i] = result.missing_critical;
 
         if (missingInfoDetected(result)) {
@@ -109,17 +70,9 @@ async function gatherCriticalRequirements(_steps, context, prevMissing) {
 async function planTask(resume) {
 
     showSpinner(true, thinking);
+    const p = planTaskPrompt(resume);
 
-    let plan = `
-        Divide the described task into exactly three simple execution steps`,
-        message = `task to divide in 3 steps(not a direct command): ${resume}
-        > Use ${CONFIG.max_output_words} words max for each asked output properties.
-        > For all planned steps a purpose must be set.
-        > You must use "what_user_didnt_asked_for" key to exclude wich is not needed from planing.
-        > Return  what_user_didnt_asked_for expanded
-        `;
-
-    return await apiCall(plan, message, "plan_task")
+    return await apiCall(p[0], p[1], "plan_task")
 }
 
 
@@ -127,12 +80,15 @@ async function planTask(resume) {
 //
 async function completeTask(_resume, plan, context) {
 
-    let resume = `Complete  task: { { ${_resume} } } following this plan: { { ${plan} } } . Output language { { ${lang} } } `,
-        message = `Context for the current task: ${context}.Finally: be breve and concise `;
+    if (!plan)
+        plan = 'Answer user message, no complex planning needed.';
+
+    const p = completeTaskPrompt(_resume, plan, context);
 
     saveResumesHistory(_resume, startIndex, getLastUserMsgIndex());
     clear();
-    return await apiCall(resume, message, "", false, true);
+
+    return await apiCall(p[0], p[1], "", false, true);
 
 }
 
@@ -141,11 +97,9 @@ async function completeTask(_resume, plan, context) {
 //
 async function askForMissingDetail(missing_info) {
 
-    let resume = `Ask nicely for this missing info - dont enunciate or narrate or explain your answer, just ask for
-    missing info directly:  ${JSON.stringify(missing_info)} `,
-        message = `Output language { { ${lang} } }`;
+    const p = askForMissingDetailsPrompt(missing_info);
 
-    return await apiCall(resume, message, "", false)
+    return await apiCall(p[0], p[1], "", false)
 }
 
 
@@ -153,11 +107,9 @@ async function askForMissingDetail(missing_info) {
 //
 async function createTags(_resume) {
 
-    let tags = `Given this topic: { { ${_resume} } }, suggest 3 to ${CONFIG.max_suggested_tags} dive in related topics,
-    so user can learn more about it.Use output language -> ${lang} `,
-        message = ``;
+    let p = createTagsprompts(_resume)
 
-    return await apiCall(tags, message, "cloud_tags", false);
+    return await apiCall(p[0], p[1], "cloud_tags", false);
 }
 
 //
@@ -295,7 +247,7 @@ async function processMessage(msg) {
         localStorage.getItem("learningMode") === "true" ?
             createTags(_resume).then((tags) => related_tags = tags) : null;
 
-        return await completeTask(JSON.parse(_resume).resume, _plan, context);
+        return await completeTask(JSON.parse(_resume).resume, false, context);
     }
 
     _plan = !currentPlan ? await tryTillOk(() => planTask(currenTask)) : currentPlan;
