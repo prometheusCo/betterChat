@@ -299,10 +299,69 @@ function send(text) {
 
 }
 
+
+function extractCode(texto) {
+
+    const regex = /<code\b[^>]*>(.*?)<\/code>/gis;
+    const results = [];
+
+    let match;
+    while ((match = regex.exec(texto)) !== null) {
+        results.push(match[1]);
+    }
+    return JSON.stringify(results).replace(/"|'|\[|\]|/ig, "").replace(/\\n/ig, " ");
+
+}
+
+
+function showSelectCopy(_text) {
+
+    if (document.getElementById('copy-alert')) return;
+
+    const bg = document.createElement('div');
+    bg.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    bg.id = 'copy-alert';
+
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const clasesAlert = [
+        (isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'),
+        'p-6 rounded-lg shadow-xl max-w-sm w-full flex flex-col gap-4'
+    ].join(' ');
+
+    bg.innerHTML = `
+    <div class="${clasesAlert}">
+        <span class="text-lg font-semibold block mb-2">What do you need to copy?</span>
+        <div class="flex flex-col gap-2">
+            <button id="btn-copy-all" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 focus:outline-none">All text</button>
+            <button id="btn-copy-code" class="${isDark ? 'bg-gray-700' : 'bg-gray-200'} text-sm py-2 rounded hover:bg-gray-400 focus:outline-none">Only code</button>
+        </div>
+    </div>
+    `;
+
+    document.body.appendChild(bg);
+
+    bg.querySelector('#btn-copy-all').onclick = function () {
+        document.body.removeChild(bg);
+        const textToCopy = _text;
+        navigator.clipboard.writeText(textToCopy).then((text) => showFeedback("Text copied to clipboard!"));
+    };
+
+    bg.querySelector('#btn-copy-code').onclick = function () {
+
+        document.body.removeChild(bg);
+        const textToCopy = extractCode(_text);
+        navigator.clipboard.writeText(textToCopy).then((text) => showFeedback("Text copied to clipboard!"));
+
+    };
+
+
+}
+
+
 //
 //
 const handleRedo = (e) => redoFlow(e);
-
 
 //
 //
@@ -311,7 +370,11 @@ async function handleCopy(e) {
     let textToCopy = e.parentElement.parentElement.innerText;
     log(textToCopy);
 
+    if (textToCopy.includes("<code>"))
+        return showSelectCopy(textToCopy);
+
     navigator.clipboard.writeText(textToCopy).then((text) => showFeedback("Text copied to clipboard!"));
+
 }
 
 
