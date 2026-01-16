@@ -79,7 +79,8 @@ const completeTaskPrompt = (_resume, plan, context) => {
     let complete = `Complete  task: { { ${_resume} } } following this plan: { { ${plan} } } . Output language { { ${lang} } } `;
 
     let message = `Context for the current task: ${context}.Finally: be breve and concise. 
-    Important conditiona: If code output is expected deliver it bettwen <code></code> tags. `;
+    Important conditiona: If code output is expected deliver it bettwen <code></code> tags.
+    Output language { { ${lang} } } `;
 
     return [complete, message];
 }
@@ -91,7 +92,7 @@ const askForMissingDetailsPrompt = (missing_info) => {
     let missing = `Ask nicely for this missing info - dont enunciate or narrate or explain your answer, just ask for
     missing info directly:  ${JSON.stringify(missing_info)} `;
 
-    let message = `Output language { { ${lang} } }`;
+    let message = `Output language mandatory: { { ${lang} } }`;
 
     return [missing, message];
 }
