@@ -1,80 +1,88 @@
-# Frontend especializado para API OpenAI con **Chain of Thought controlado por código** y **Modo de Aprendizaje**
+# BetterChat — Frontend OpenAI con Chain of Thought controlado por código
 
----
-
-[Demo usable del proyecto](https://japgcv.es/portfolio/betterChat)
-
+[Versión web](https://japgcv.es/portfolio/betterChat)
 
 ## Descripción
 
-Este proyecto es un **frontend minimalista** para interactuar con la API de OpenAI, diseñado para **controlar el flujo de razonamiento (Chain of Thought) desde el código**, en lugar de delegar toda la “cadena” a un único prompt largo.
+BetterChat es un **frontend minimalista para la API de OpenAI** que controla el razonamiento del modelo **desde el código**, y no desde prompts.
 
-En vez de pedirle al modelo que planifique y ejecute todo de una sola vez, la aplicación **orquesta el proceso paso a paso en JavaScript**, imponiendo un pipeline estable y auditable. Esto permite:
 
-- **Reducir variabilidad** entre respuestas (menos “improvisación” del modelo).
-- **Aplicar validaciones y heurísticas** antes de avanzar al siguiente paso.
-- **Mantener control** sobre qué se pregunta, cuándo y con qué formato.
+El sistema impone un flujo determinista en JavaScript que:
 
-El flujo de trabajo se implementa explícitamente a nivel de código e incluye:
+- Resume la tarea del usuario
+- **Explicita qué NO ha pedido el usuario**
+- Evalúa la complejidad de la petición
+- Decide si planificar o ejecutar directamente según un nivel de complejidad predefinido
+- Detecta información crítica faltante
+- Pide aclaraciones  cuando es necesario
+- Ejecuta la respuesta final teniendo en cuenta un contexto global guardado en "settings"
 
-- **Resumen de la tarea**
-- **Determinación de complejidad**
-- **Descomposición en pasos (si aplica)**
-- **Verificación de información faltante o requisitos**
-- **Ejecución secuencial y controlada de cada paso**
+La identificación explícita de **lo que el usuario no ha solicitado** permite **evitar verbosidad innecesaria**, suposiciones y trabajo no requerido.
 
-Además, integra un **Modo de Aprendizaje**: tras cada consulta, el frontend muestra debajo del mensaje una **nube de etiquetas** relacionadas para explorar conceptos asociados y profundizar de forma guiada, fomentando el aprendizaje continuo sin recargar la interfaz.
+Incluye un **Modo Aprendizaje** que genera una **nube de etiquetas** tras cada respuesta para explorar temas relacionados sin afectar al flujo principal.
 
-Para evitar problemas comunes como la **sobreplanificación** o el **contexto redundante**, el sistema incorpora **heurísticas** que deciden cuándo dividir tareas, cuándo pedir aclaraciones y cuánto contexto incluir en cada llamada.
+Al tratarse de una interfaz **simple**, no introduce lógica de UI adicional durante la recepción de la respuesta, por lo que el streaming se muestra sin pausas ni bloqueos mientras el modelo responde.
 
----
 
-## Características principales
+## Características
 
-- **Orquestación del Chain of Thought por código (JavaScript)**: el programa define el pipeline, no un prompt monolítico.
-- **Interfaz clara y minimalista** centrada en la tarea y el resultado.
-- **Análisis automático de complejidad** para decidir si conviene descomponer.
-- **División inteligente en pasos** con control de entrada/salida por etapa.
-- **Chequeos de completitud y relevancia** antes de ejecutar o continuar.
-- **Ejecución ordenada y verificable**: cada paso queda explícito y trazable.
-- **Modo aprendizaje con nube de etiquetas** para navegación temática.
-- **Heurísticas anti-sobreplanificación** y anti-exceso de contexto para optimizar rendimiento y consistencia.
+- Chain of Thought orquestado por código
+- Resumen del objetivo y **exclusión explícita de lo no solicitado**
+- Análisis automático de complejidad
+- Planificación condicional en pasos
+- Detección temprana de información crítica faltante
+- Parada segura y solicitud de aclaraciones
+- Contexto y estado persistente
+- **Interfaz simple que no bloquea el streaming**
+- Modo aprendizaje con etiquetas semánticas
+- Heurísticas anti-sobreplanificación, anti-verbosidad y anti-contexto redundante
+
+
+## Objetivo
+
+Reducir la improvisación del modelo y ofrecer **respuestas más concisas, consistentes y controlables**, manteniendo el razonamiento bajo control del desarrollador. Evitando en lo posible rodeos, verbosidad no solicitada y alucinaciones.
 
 #
 #
 #
-#
 
-## Specialized Frontend for the OpenAI API with Code-Level Chain-of-Thought Control and Learning Mode
+# BetterChat — OpenAI Frontend with Code-Controlled Chain of Thought
 
----
-
-[Working demo](https://japgcv.es/portfolio/betterChat)
+[Web version](https://japgcv.es/portfolio/betterChat)
 
 ## Description
 
-This project is an **minimal clean frontend** that interacts with the OpenAI API, implementing **Chain-of-Thought control at code level**. This approach is preferable to relying on the model to execute an entire reasoning pipeline inside a single prompt, because the application can **enforce a structured, optimized flow** deterministically.
+BetterChat is a **minimal frontend for the OpenAI API** that controls the model’s reasoning **from code**, rather than through prompts.
 
-The frontend is designed to ensure that any OpenAI model processes tasks through a clear, minimalistic interface and a controlled sequence that includes:
+The system enforces a deterministic JavaScript flow that:
 
-- **Task summary**  
-- **Complexity assessment**  
-- **Step breakdown when the task is complex**  
-- **Validation of required information**  
-- **Step-by-step execution**  
+- Summarizes the user’s task  
+- **Explicitly states what the user did NOT ask for**  
+- Evaluates the request complexity  
+- Decides whether to plan or execute directly based on a predefined complexity level  
+- Detects missing critical information  
+- Requests clarifications when necessary  
+- Executes the final response taking into account a global context stored in “settings”
 
-In addition, it includes an **interactive learning mode** that, after each query, displays a **tag cloud** beneath the message to explore related topics and support continuous learning.
+Explicitly identifying **what the user did not request** helps **avoid unnecessary verbosity**, assumptions, and unrequested work.
 
-To avoid common issues such as **over-planning** and **excess context**, the system incorporates **smart heuristics** that optimize API interaction and improve overall performance.
+It includes a **Learning Mode** that generates a **tag cloud** after each response, allowing exploration of related topics without affecting the main flow.
 
----
+Because the interface is **simple**, it does not introduce additional UI logic while receiving the response, so streaming is displayed continuously, without pauses or blocking, as the model responds.
 
-## Key Features
+## Features
 
-- Explicit, code-enforced Chain-of-Thought reasoning flow for OpenAI models (rather than prompt-only orchestration).
-- Automatic task complexity analysis.
-- Intelligent decomposition of complex tasks into manageable steps.
-- Completeness and relevance checks before execution.
-- Ordered, controlled step execution at the application level.
-- Learning mode with a tag cloud for topic navigation.
-- Heuristics to minimize over-planning and prevent redundant context.
+- Code-orchestrated Chain of Thought  
+- Task summarization and **explicit exclusion of what was not requested**  
+- Automatic complexity analysis  
+- Conditional step-based planning  
+- Early detection of missing critical information  
+- Safe stopping and clarification requests  
+- Persistent context and state  
+- **Simple interface that does not block streaming**  
+- Learning mode with semantic tags  
+- Anti-overplanning, anti-verbosity, and anti-redundant-context heuristics  
+
+## Goal
+
+To reduce model improvisation and provide **more concise, consistent, and controllable responses**, keeping reasoning under developer control and avoiding unnecessary detours, unrequested verbosity, and hallucinations.
