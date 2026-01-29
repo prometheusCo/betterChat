@@ -43,8 +43,6 @@ Al tratarse de una interfaz **simple**, no introduce lógica de UI adicional dur
 Reducir la improvisación del modelo y ofrecer **respuestas más concisas, consistentes y controlables**, manteniendo el razonamiento bajo control del desarrollador. Evitando en lo posible rodeos, verbosidad no solicitada y alucinaciones.
 
 #
-#
-#
 
 # BetterChat — OpenAI Frontend with Code-Controlled Chain of Thought
 
