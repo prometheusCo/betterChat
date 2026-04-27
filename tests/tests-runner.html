@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Jasmine Runner - Solid</title>
+
+    <!-- JASMINE -->
+    <link rel="stylesheet" href="https://unpkg.com/jasmine-core/lib/jasmine-core/jasmine.css">
+    <script src="https://unpkg.com/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+    <script src="https://unpkg.com/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
+    <script src="https://unpkg.com/jasmine-core/lib/jasmine-core/boot0.js"></script>
+    <script src="https://unpkg.com/jasmine-core/lib/jasmine-core/boot1.js"></script>
+
+    <!-- HARD GUARDS BEFORE APP LOAD -->
+    <script>
+        // CONFIG fallback (critical)
+        window.CONFIG = window.CONFIG || {
+            max_retry_attemps: 3,
+            secs_to_wait_for_net_retry: 0,
+            complexity_level_threshold: 1
+        };
+
+        // Safe async mocks (avoid real network / undefined crashes)
+        window.apiCall = window.apiCall || (() => Promise.resolve("mock"));
+        window.tryApiCall = window.tryApiCall || (() => Promise.resolve("mock"));
+
+        // Safe UI no-ops (avoid DOM dependency crashes)
+        window.loadChatHistory = window.loadChatHistory || (() => { });
+        window.renderFAQ = window.renderFAQ || (() => { });
+        window.setEvents = window.setEvents || (() => { });
+        window.setLearningMode = window.setLearningMode || (() => { });
+        window.setLight_Dark_Mode = window.setLight_Dark_Mode || (() => { });
+        window.renderHistoryResume = window.renderHistoryResume || (() => { });
+        window.showSpinner = window.showSpinner || (() => { });
+    </script>
+
+    <!-- APP CONFIG -->
+    <script src="../CONFIG.js"></script>
+
+    <!-- APP CORE (ORDER MATTERS) -->
+    <script src="../js_components/errors.js"></script>
+    <script src="../js_components/outputControl.js"></script>
+    <script src="../js_components/storage.js"></script>
+    <script src="../js_components/ui.js"></script>
+    <script src="../js_components/core.js"></script>
+
+    <!-- DOM + EVENTS -->
+    <script src="../js_components/dom.js"></script>
+    <script src="../js_components/events.js"></script>
+    <script src="../js_components/prompts.js"></script>
+    <script src="../js_components/flow-control.js"></script>
+
+    <!-- TESTS -->
+    <script src="flow-control-tests.js"></script>
+</head>
+
+<body>
+
+    <!-- MINIMAL DOM MOCK (covers real usage, not random guess) -->
+
+    <!-- Core -->
+    <div id="workspace-container"></div>
+    <div id="chat-area"></div>
+    <div id="hero"></div>
+    <div id="message-list"></div>
+
+    <!-- Settings -->
+    <div id="settings-modal"></div>
+    <div id="dynamic-settings-wrapper"></div>
+    <textarea id="memory-input"></textarea>
+
+    <!-- FAQ -->
+    <div id="info-modal"></div>
+    <div id="faq-container"></div>
+
+    <!-- History -->
+    <div id="history-modal"></div>
+    <div id="resume-list"></div>
+
+    <!-- Delete -->
+    <div id="delete-modal"></div>
+
+    <!-- Inputs -->
+    <textarea id="user-input"></textarea>
+
+    <!-- Buttons -->
+    <button id="send-button"></button>
+    <button id="stop-button"></button>
+    <button id="theme-toggle"></button>
+    <button id="settings-btn"></button>
+    <button id="info-btn"></button>
+    <button id="close-info"></button>
+    <button id="close-history"></button>
+    <button id="history-button"></button>
+    <button id="delete-storage-btn"></button>
+    <button id="cancel-modal"></button>
+    <button id="save-settings"></button>
+    <button id="cancel-delete"></button>
+    <button id="confirm-delete"></button>
+
+    <!-- Kill app auto-init -->
+    <script>
+        window.onload = function () { };
+    </script>
+
+</body>
+
+</html>

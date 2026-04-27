@@ -1,8 +1,8 @@
 // ===============================
-// Flow Orchestration tests
+// Flow Orchestration 
 // ===============================
 
-describe("Flow Orchestration tests ", () => {
+describe("Flow Orchestration - Senior Level", () => {
 
     let originalConfig;
 
@@ -21,7 +21,7 @@ describe("Flow Orchestration tests ", () => {
             base_deep: 1
         };
 
-        // FULL state reset 
+        // FULL state reset (critical)
         window.chat_resume = [["No goal defined yet - Prompt something to start", [0, 0]]];
         window.related_tags = [];
         window.lang = null;
