@@ -1,8 +1,6 @@
-```
 # Flow Orchestration Engine + Test Suite
 
 ---
-
 
 ### Descripción
 Este proyecto implementa un motor de orquestación en cliente que procesa mensajes del usuario mediante un flujo asíncrono estructurado:
@@ -214,5 +212,4 @@ Characteristics:
 ### Notes
 - External dependencies (apiCall, prompts, storage) are mocked in tests  
 - The system assumes JSON responses  
-- DOM is used for context reconstruction  
-```
+- DOM is used for context reconstruction
