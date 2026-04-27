@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Jasmine Runner - Solid</title>
+    <title>Jasmine Runner - Solid Fixed</title>
 
     <!-- JASMINE -->
     <link rel="stylesheet" href="https://unpkg.com/jasmine-core/lib/jasmine-core/jasmine.css">
@@ -14,18 +14,28 @@
 
     <!-- HARD GUARDS BEFORE APP LOAD -->
     <script>
-        // CONFIG fallback (critical)
+        // CONFIG fallback
         window.CONFIG = window.CONFIG || {
             max_retry_attemps: 3,
             secs_to_wait_for_net_retry: 0,
-            complexity_level_threshold: 1
+            complexity_level_threshold: 5,
+            base_deep: 1
         };
 
-        // Safe async mocks (avoid real network / undefined crashes)
-        window.apiCall = window.apiCall || (() => Promise.resolve("mock"));
-        window.tryApiCall = window.tryApiCall || (() => Promise.resolve("mock"));
+        // Required globals
+        window.wait = window.wait || (() => Promise.resolve());
+        window.BAR = window.BAR || "BAR";
+        window.getLastUserMsgIndex = window.getLastUserMsgIndex || (() => 0);
 
-        // Safe UI no-ops (avoid DOM dependency crashes)
+        // Safe async mocks
+        window.apiCall = window.apiCall || (() => Promise.resolve("{}"));
+        window.tryApiCall = window.tryApiCall || (() => Promise.resolve("{}"));
+
+        // Storage + side effects
+        window.saveStorage = window.saveStorage || (() => { });
+        window.loadFromStorage = window.loadFromStorage || (() => Promise.resolve(""));
+
+        // UI / app lifecycle no-ops
         window.loadChatHistory = window.loadChatHistory || (() => { });
         window.renderFAQ = window.renderFAQ || (() => { });
         window.setEvents = window.setEvents || (() => { });
@@ -33,12 +43,14 @@
         window.setLight_Dark_Mode = window.setLight_Dark_Mode || (() => { });
         window.renderHistoryResume = window.renderHistoryResume || (() => { });
         window.showSpinner = window.showSpinner || (() => { });
+        window.log = window.log || (() => { });
+        window.errorHandling = window.errorHandling || (() => { });
     </script>
 
     <!-- APP CONFIG -->
     <script src="../CONFIG.js"></script>
 
-    <!-- APP CORE (ORDER MATTERS) -->
+    <!-- APP CORE -->
     <script src="../js_components/errors.js"></script>
     <script src="../js_components/outputControl.js"></script>
     <script src="../js_components/storage.js"></script>
@@ -57,7 +69,7 @@
 
 <body>
 
-    <!-- MINIMAL DOM MOCK (covers real usage, not random guess) -->
+    <!-- MINIMAL DOM MOCK -->
 
     <!-- Core -->
     <div id="workspace-container"></div>
@@ -99,7 +111,7 @@
     <button id="cancel-delete"></button>
     <button id="confirm-delete"></button>
 
-    <!-- Kill app auto-init -->
+    <!-- Prevent real app init -->
     <script>
         window.onload = function () { };
     </script>
