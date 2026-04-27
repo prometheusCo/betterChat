@@ -1,215 +1,150 @@
-# Flow Orchestration Engine + Test Suite
+# Jasmine Test Suite - Flow Orchestration
 
 ---
 
-### Descripción
-Este proyecto implementa un motor de orquestación en cliente que procesa mensajes del usuario mediante un flujo asíncrono estructurado:
+DESCRIPCION
 
-1. Resumir la intención del usuario  
-2. Planificar la tarea  
-3. Detectar información crítica faltante  
-4. Ejecutar o solicitar aclaración  
-5. Guardar contexto e historial  
+Este repositorio contiene una suite de tests con Jasmine enfocada exclusivamente en validar la logica de orquestacion de flujo.
 
-Incluye un sistema de reintentos y una suite de tests con Jasmine.
+Los tests se ejecutan directamente en el navegador sin necesidad de herramientas de build, modulos o configuracion adicional.
+
+Todas las dependencias externas (API, storage, UI) estan mockeadas para garantizar pruebas deterministas y aisladas.
 
 ---
 
-### Arquitectura
-El sistema se basa en un flujo asíncrono controlado:
+ALCANCE
 
-- processMessage → orquestador principal  
-- resumeTask → extrae intención  
-- planTask → genera pasos  
-- gatherCriticalRequirements → detecta datos faltantes  
-- completeTask → produce el resultado  
-- askForMissingDetail → gestiona información incompleta  
+La suite de tests valida:
 
----
-
-### Características principales
-- Orquestación asíncrona con estado global controlado  
-- Sistema de reintentos (tryTillOk)  
-- Reconstrucción de contexto usando DOM e historial  
-- Salida temprana para tareas simples  
-- Detección de información faltante  
-- Reutilización de estado entre ejecuciones  
+- Logica de reintentos en operaciones asincronas
+- Validacion de respuestas JSON
+- Flujo completo de orquestacion (resume → plan → critical → complete)
+- Manejo de informacion critica faltante
+- Rama de baja complejidad
+- Reutilizacion de estado entre llamadas
+- Funciones auxiliares dependientes del DOM
 
 ---
 
-### Lógica de reintentos (tryTillOk)
-Reintenta operaciones hasta:
-- Obtener JSON válido, o  
-- Alcanzar el máximo de intentos  
+COMO EJECUTAR
 
-Comportamiento:
-- Reintenta en errores de red  
-- Reintenta en JSON inválido  
-- Espera entre intentos (configurable)  
-- Llama a errorHandling al fallar definitivamente  
+1. Abrir test/runner.html en un navegador
+2. Jasmine se inicializa automaticamente
+3. Todos los tests se ejecutan al cargar
+4. Los resultados se muestran en pantalla
+
 
 ---
 
-### Gestión de estado
-Variables globales:
+ESTRATEGIA DE MOCKING
 
-- currenTask  
-- currentPlan  
-- prevMissing  
-- chat_resume  
-- startIndex  
+La suite mockea:
 
-El estado se reinicia mediante:
-- clear()
+- Llamadas API (apiCall, tryApiCall)
+- Utilidades asincronas (wait)
+- Storage (loadFromStorage, saveStorage)
+- Efectos de UI (showSpinner, render, etc.)
 
----
+Esto garantiza:
 
-### Suite de tests (Jasmine)
-
-La suite valida:
-
-- Lógica de reintentos (éxito / fallo / JSON inválido)  
-- Flujo completo de ejecución  
-- Rama de información faltante  
-- Salida temprana por baja complejidad  
-- Reutilización de estado entre llamadas  
-- Lógica dependiente del DOM  
-- Ejecución de efectos secundarios  
-
-Características:
-- Estado completamente aislado por test  
-- Comportamiento asíncrono determinista  
-- Sin dependencias reales de red o tiempo  
-- Validación de flujo y datos  
+- Sin dependencia de red
+- Sin problemas de timing
+- Comportamiento totalmente determinista
 
 ---
 
-### Cómo ejecutar los tests
+AISLAMIENTO
 
-1. Instalar Jasmine:
-   npm install jasmine
+Cada test reinicia:
 
-2. Inicializar:
-   npx jasmine init
+- Variables globales
+- Objeto de configuracion
+- Contenido del DOM
 
-3. Colocar el archivo de tests en:
-   /spec/
-
-4. Ejecutar:
-   npx jasmine
+Esto evita contaminacion entre tests
 
 ---
 
-### Notas
-- Las dependencias externas (apiCall, prompts, storage) están simuladas en los tests  
-- El sistema asume respuestas en formato JSON  
-- Se utiliza el DOM para reconstrucción de contexto  
+LIMITACIONES
+
+- Uso de estado global (window)
+- No cubre integraciones reales
+- Ejecucion solo en navegador
 
 
 ---
 ---
 ---
+---
 
 
-### Overview
-This project implements a client-side orchestration engine that processes user messages through a structured async pipeline:
+DESCRIPTION
 
-1. Resume user intent  
-2. Plan the task  
-3. Detect missing critical information  
-4. Execute or request clarification  
-5. Store context and history  
+This repository contains a Jasmine-based unit test suite focused exclusively on validating the flow orchestration logic.
 
-It includes a retry mechanism and a Jasmine-based test suite.
+The tests are designed to run directly in the browser without requiring build tools, modules, or external setup.
+
+All external dependencies (API, storage, UI) are mocked to ensure deterministic and isolated unit testing.
 
 ---
 
-### Architecture
-The system is built around a controlled async flow:
+SCOPE
 
-- processMessage → main orchestrator  
-- resumeTask → extracts intent  
-- planTask → generates steps  
-- gatherCriticalRequirements → detects missing data  
-- completeTask → produces output  
-- askForMissingDetail → handles incomplete input  
+The test suite validates:
 
----
+- Retry logic for async operations
+- JSON response validation
+- Full orchestration flow (resume → plan → critical → complete)
+- Handling of missing critical information
+- Low complexity early exit branch
+- State reuse across multiple calls
+- DOM-dependent helper functions
 
-### Core Features
-- Async orchestration with controlled global state  
-- Retry mechanism (tryTillOk)  
-- Context reconstruction using DOM and history  
-- Early exit for low-complexity tasks  
-- Missing information detection  
-- State reuse across executions  
 
 ---
 
-### Retry Logic (tryTillOk)
-Retries operations until:
-- A valid JSON response is returned, or  
-- Maximum attempts are reached  
+HOW TO RUN
 
-Behavior:
-- Retries on network errors  
-- Retries on invalid JSON  
-- Waits between attempts (configurable)  
-- Calls errorHandling on final failure  
+1. Open test/runner.html in a browser
+2. Jasmine will initialize automatically
+3. All tests will execute on load
+4. Results will be displayed in the browser
+
 
 ---
 
-### State Management
-Global variables:
+MOCKING STRATEGY
 
-- currenTask  
-- currentPlan  
-- prevMissing  
-- chat_resume  
-- startIndex  
+The test suite mocks:
 
-State is reset using:
-- clear()
+- API calls (apiCall, tryApiCall)
+- Async utilities (wait)
+- Storage (loadFromStorage, saveStorage)
+- UI side effects (showSpinner, render, etc.)
 
----
+This ensures:
 
-### Test Suite (Jasmine)
-
-The suite validates:
-
-- Retry logic (success / failure / invalid JSON)  
-- Full execution flow  
-- Missing information branch  
-- Low-complexity early exit  
-- State reuse between calls  
-- DOM-dependent logic  
-- Side effects execution  
-
-Characteristics:
-- Fully isolated state per test  
-- Deterministic async behavior  
-- No real network or timing dependencies  
-- Validation of both flow and data  
+- No network dependency
+- No timing instability
+- Fully deterministic behavior
 
 ---
 
-### How to run tests
+ISOLATION
 
-1. Install Jasmine:
-   npm install jasmine
+Each test resets:
 
-2. Initialize:
-   npx jasmine init
+- Global state variables
+- Configuration object
+- DOM content
 
-3. Place test file in:
-   /spec/
-
-4. Run:
-   npx jasmine
+This prevents cross-test contamination.
 
 ---
 
-### Notes
-- External dependencies (apiCall, prompts, storage) are mocked in tests  
-- The system assumes JSON responses  
-- DOM is used for context reconstruction
+LIMITATIONS
+
+- Relies on global state (window)
+- Does not test real integrations
+- Browser-only execution environment
+
