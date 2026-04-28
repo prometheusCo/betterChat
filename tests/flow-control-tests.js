@@ -21,6 +21,24 @@ describe("Flow Orchestration tests", () => {
             base_deep: 1
         };
 
+        // FIX window methods existence
+        window.getResumePrompt = window.getResumePrompt || function () { };
+        window.planTaskPrompt = window.planTaskPrompt || function () { };
+        window.completeTaskPrompt = window.completeTaskPrompt || function () { };
+        window.gatherCriticalRequirementsPrompt = window.gatherCriticalRequirementsPrompt || function () { };
+        window.askForMissingDetailsPrompt = window.askForMissingDetailsPrompt || function () { };
+        window.createTagsprompts = window.createTagsprompts || function () { };
+        window.showSpinner = window.showSpinner || function () { };
+        window.saveResumesHistory = window.saveResumesHistory || function () { };
+        window.clear = window.clear || function () { };
+        window.log = window.log || function () { };
+        window.wait = window.wait || function () { return Promise.resolve(); };
+        window.errorHandling = window.errorHandling || function () { };
+        window.loadFromStorage = window.loadFromStorage || function () { return Promise.resolve("GLOBAL"); };
+
+        // FIX async leakage
+        spyOn(window, 'setTimeout').and.callFake((fn) => fn());
+
         // FULL state reset (critical)
         window.chat_resume = [["No goal defined yet - Prompt something to start", [0, 0]]];
         window.related_tags = [];
@@ -52,9 +70,6 @@ describe("Flow Orchestration tests", () => {
 
         // STORAGE
         spyOn(window, 'loadFromStorage').and.resolveTo("GLOBAL");
-
-        // DOM isolation
-        document.body.innerHTML = "";
 
     });
 
@@ -350,12 +365,15 @@ describe("Flow Orchestration tests", () => {
 
     it("getLastInteractions_extracts_pairs_correctly", () => {
 
-        document.body.innerHTML = `
+        const root = document.createElement("div");
+        root.innerHTML = `
             <div class="user-msg">Hi</div>
             <div>AI1</div>
             <div class="user-msg">Hello</div>
             <div>AI2</div>
         `;
+
+        document.body.appendChild(root);
 
         const result = getLastInteractions(0);
 
@@ -368,7 +386,9 @@ describe("Flow Orchestration tests", () => {
 
         window.chat_resume = [["task", [0, 1]]];
 
-        document.body.innerHTML = `<div resume>RESULT</div>`;
+        const root = document.createElement("div");
+        root.innerHTML = `<div resume>RESULT</div>`;
+        document.body.appendChild(root);
 
         const ctx = buildContext("msg", 0, "GLOBAL");
 
