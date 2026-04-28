@@ -75,6 +75,7 @@ describe("Flow Orchestration tests", () => {
 
     afterEach(() => {
         window.CONFIG = originalConfig;
+        // document.body.innerHTML = "";
     });
 
     // ===============================
@@ -88,8 +89,8 @@ describe("Flow Orchestration tests", () => {
         const res = await tryTillOk(fn);
 
         expect(fn).toHaveBeenCalledTimes(CONFIG.max_retry_attemps);
-        expect(wait).toHaveBeenCalledTimes(CONFIG.max_retry_attemps);
-        expect(errorHandling).toHaveBeenCalledTimes(1);
+        expect(window.wait).toHaveBeenCalledTimes(CONFIG.max_retry_attemps);
+        expect(window.errorHandling).toHaveBeenCalledTimes(1);
         expect(res).toBeUndefined();
     });
 
@@ -100,8 +101,8 @@ describe("Flow Orchestration tests", () => {
         const res = await tryTillOk(fn);
 
         expect(fn).toHaveBeenCalledTimes(CONFIG.max_retry_attemps);
-        expect(wait).toHaveBeenCalledTimes(CONFIG.max_retry_attemps);
-        expect(errorHandling).toHaveBeenCalled();
+        expect(window.wait).toHaveBeenCalledTimes(CONFIG.max_retry_attemps);
+        expect(window.errorHandling).toHaveBeenCalled();
         expect(res).toBeUndefined();
     });
 
@@ -113,7 +114,7 @@ describe("Flow Orchestration tests", () => {
         const res = await tryTillOk(fn);
 
         expect(fn).toHaveBeenCalledTimes(1);
-        expect(wait).not.toHaveBeenCalled();
+        expect(window.wait).not.toHaveBeenCalled();
         expect(res).toBe(payload);
     });
 
@@ -127,7 +128,7 @@ describe("Flow Orchestration tests", () => {
 
         const res = await processMessage("msg");
 
-        expect(errorHandling).toHaveBeenCalled();
+        expect(window.errorHandling).toHaveBeenCalled();
         expect(res).toBeUndefined();
 
         expect(currenTask).toBeFalsy();
@@ -249,7 +250,7 @@ describe("Flow Orchestration tests", () => {
         const parsed = JSON.parse(res);
 
         expect(parsed.done).toBeTrue();
-        expect(apiCall.calls.count()).toBe(2);
+        expect(window.apiCall.calls.count()).toBe(2);
     });
 
     // ===============================
@@ -352,8 +353,8 @@ describe("Flow Orchestration tests", () => {
 
         const res = await completeTask("res", "plan", "ctx");
 
-        expect(saveResumesHistory).toHaveBeenCalledTimes(1);
-        expect(clear).toHaveBeenCalledTimes(1);
+        expect(window.saveResumesHistory).toHaveBeenCalledTimes(1);
+        expect(window.clear).toHaveBeenCalledTimes(1);
 
         const parsed = JSON.parse(res);
         expect(parsed.done).toBeTrue();
