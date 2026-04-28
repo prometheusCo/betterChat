@@ -2,7 +2,7 @@
 // Flow Orchestration 
 // ===============================
 
-describe("Flow Orchestration - Senior Level", () => {
+describe("Flow Orchestration tests", () => {
 
     let originalConfig;
 

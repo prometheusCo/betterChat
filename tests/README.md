@@ -1,4 +1,3 @@
-# Jasmine Test Suite - Flow Orchestration
 
 ---
 
@@ -45,29 +44,10 @@ La suite mockea:
 - Storage (loadFromStorage, saveStorage)
 - Efectos de UI (showSpinner, render, etc.)
 
-Esto garantiza:
-
-- Sin dependencia de red
-- Sin problemas de timing
-- Comportamiento totalmente determinista
-
----
-
-AISLAMIENTO
-
-Cada test reinicia:
-
-- Variables globales
-- Objeto de configuracion
-- Contenido del DOM
-
-Esto evita contaminacion entre tests
-
 ---
 
 LIMITACIONES
 
-- Uso de estado global (window)
 - No cubre integraciones reales
 - Ejecucion solo en navegador
 
@@ -122,29 +102,10 @@ The test suite mocks:
 - Storage (loadFromStorage, saveStorage)
 - UI side effects (showSpinner, render, etc.)
 
-This ensures:
-
-- No network dependency
-- No timing instability
-- Fully deterministic behavior
-
----
-
-ISOLATION
-
-Each test resets:
-
-- Global state variables
-- Configuration object
-- DOM content
-
-This prevents cross-test contamination.
-
 ---
 
 LIMITATIONS
 
-- Relies on global state (window)
 - Does not test real integrations
 - Browser-only execution environment
 
