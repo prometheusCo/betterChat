@@ -30,7 +30,6 @@ COMO EJECUTAR
 1. Abrir test/runner.html en un navegador
 2. Jasmine se inicializa automaticamente
 3. Todos los tests se ejecutan al cargar
-4. Los resultados se muestran en pantalla
 
 
 ---
@@ -88,7 +87,6 @@ HOW TO RUN
 1. Open test/runner.html in a browser
 2. Jasmine will initialize automatically
 3. All tests will execute on load
-4. Results will be displayed in the browser
 
 
 ---
